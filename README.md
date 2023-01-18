@@ -1,4 +1,4 @@
-# VMKS - Budged Dynamics -
+# VMKS - Budget Dynamics - 
 
 Budget Boston Dynamics
 
