@@ -1,4 +1,7 @@
-# VMKS - Budget Dynamics - 
+# MECHKA
+## by Budget Dynamics
+
+### VMKS project
 
 Budget Boston Dynamics
 
