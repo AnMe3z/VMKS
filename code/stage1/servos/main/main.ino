@@ -24,10 +24,10 @@ void setup() {
   HCPCA9685.Init(SERVO_MODE);
   HCPCA9685.Sleep(false);
 
-  inverseKinematics(0, 2);
-  inverseKinematics(1, 2);
-  inverseKinematics(2, 2);
-  inverseKinematics(3, 2);
+  inverseKinematics(0, 1);
+  inverseKinematics(1, 1);
+  inverseKinematics(2, 1);
+  inverseKinematics(3, 1);
   bodyUp = true;
   
   delay(3000);
@@ -35,35 +35,36 @@ void setup() {
 
 void loop() {
   
-//  inverseKinematics(0, 2);
-//  inverseKinematics(1, 2);
-//  inverseKinematics(2, 2);
-//  inverseKinematics(3, 2);
-//  delay(3000);
-//  inverseKinematics(0, 12);
-//  inverseKinematics(1, 12);
-//  inverseKinematics(2, 12);
-//  inverseKinematics(3, 12);
-//  delay(3000);
-    
-  // --- up and down loop code
-  if(bodyUp){
-    torso += 0.2;
-    if(torso == 12.0){
-      bodyUp = false;
-    }
-  }
-  else{
-    torso -= 0.2;
-    if(torso == 2.0){
-      bodyUp = true;
-    }
-  }
+  inverseKinematics(0, 12);
+  inverseKinematics(1, 12);
+  inverseKinematics(2, 11);
+  inverseKinematics(3, 11);
+  delay(3000);
   
-  inverseKinematics(0, torso);
-  inverseKinematics(1, torso);
-  inverseKinematics(2, torso);
-  inverseKinematics(3, torso);
+  inverseKinematics(0, 1);
+  inverseKinematics(1, 1);
+  inverseKinematics(2, 1);
+  inverseKinematics(3, 1);
+  delay(3000);
+
+  // --- up and down loop code
+//  if(bodyUp){
+//    torso += 0.2;
+//    if(torso == 12.0){
+//      bodyUp = false;
+//    }
+//  }
+//  else{
+//    torso -= 0.2;
+//    if(torso == 2.0){
+//      bodyUp = true;
+//    }
+//  }
+//  
+//  inverseKinematics(0, torso);
+//  inverseKinematics(1, torso);
+//  inverseKinematics(2, torso);
+//  inverseKinematics(3, torso);
 }
 
 void inverseKinematics(int legIndex, double torsoHeight){
