@@ -10,12 +10,12 @@ HCPCA9685 HCPCA9685(I2CAdd);
 //int servoRoms[12][12] = {{72, 180}, {22, 170}, {0, 0}, {10, 140}, {0, 180}, {0, 0}, {0, 70}, {35, 70}, {0, 0}, {10, 60}, {35, 140}, {0, 0}};
 //                      c             c           c            c           c           c           c             c
 int servoRoms[4][6] = {{40, 180, 90, 170, 0, 0}, {3, 120, 85, 156, 0, 0}, {0, 115, 90, 150, 0, 0}, {0, 115, 100, 180, 0, 0}};
+int servoCurrentAngles[4][3];
 int leg[4][3] = {{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}};
 
 int legLenght = 10;
 
-double targetAngle; // real targeted angle: maxAngle - targetAngle
-bool torsoMoving;
+//double startAngle;
 
 void setup() {
   //init the servo driver
@@ -26,30 +26,37 @@ void setup() {
   // - when the program starts move the body to lowered position
   // - stand up
 
-  targetAngle = 1;
-
+  //make the robot to sit down
+  inverseKinematics(0, 0);
+  inverseKinematics(1, 0);
+  inverseKinematics(2, 0);
+  inverseKinematics(3, 0);
+  
+  servoCurrentAngles[4][3] = {{40, 170, 0}, {3, 156, 0}, {0, 150, 0}, {0, 180, 0}};
+  
   // init pause
   delay(3000);
 }
 
 void loop() {
 
-  inverseKinematicsDelayed(0, 0);
-  inverseKinematicsDelayed(1, 0);
-  inverseKinematicsDelayed(2, 0);
-  inverseKinematicsDelayed(3, 0);
-  delay(3000);
+//  inverseKinematicsDelayed(0, 0);
+//  inverseKinematicsDelayed(1, 0);
+//  inverseKinematicsDelayed(2, 0);
+//  inverseKinematicsDelayed(3, 0);
+//  delay(3000);
 
   inverseKinematicsDelayed(0, 12);
   inverseKinematicsDelayed(1, 12);
   inverseKinematicsDelayed(2, 11);
   inverseKinematicsDelayed(3, 11);
-  delay(3000);
+  delay(30);
 }
 
 void inverseKinematicsDelayed(int legIndex, double torsoHeight){
   // --- improved version of inverseKinematics() ---
   // provides smooth movement to the calculated target angle
+  // !!! this function needs to be looped inside ' loop() '
   
   int a = legLenght;
   int b = a;
@@ -62,16 +69,40 @@ void inverseKinematicsDelayed(int legIndex, double torsoHeight){
   int femurMin = servoRoms[legIndex][2];
   int femurAngle = cosineTheorem(a, c, b);
 
-  //knee
-  for (int i = kneeMin; i <= kneeAngle; i++) {
-    HCPCA9685.Servo(kneeServoIndex, map(i, 0, 180, 1, 450));
-    delay(50);
+  // check to see if we add to or remove from the current angle 
+  int femurSign;
+  if(kneeAngle 
+
+  if (kneeAngle != servoCurrentAngles[legIndex][0]) {
+    // check to see if we add to or remove from the current angle 
+    // the direction check is inside the leg movement 'if' because we need to check ' kneeAngle != servoCurrentAngles[legIndex][0] '
+    int kneeDirectionAngle;
+    if(kneeAngle > servoCurrentAngles[legIndex][0]) {
+      kneeDirectionAngle = 1;
+    }
+    else{
+      kneeDirectionAngle = -1;
+    }
+  
+    // actual knee movement
+    HCPCA9685.Servo(kneeServoIndex, map(servoCurrentAngles[legIndex][0] + kneeDirectionAngle, 0, 180, 1, 450));
+    servoCurrentAngles[legIndex][0] += kneeDirectionAngle;
   }
   
-  //femur
-  for (int i = femurMin; i <= femurAngle; i++) {
-    HCPCA9685.Servo(femurServoIndex, map(i, 0, 180, 1, 450));
-    delay(50);
+  if (femurAngle != servoCurrentAngles[legIndex][1]) {
+    // check to see if we add to or remove from the current angle 
+    // the direction check is inside the leg movement 'if' because we need to check ' femurAngle != servoCurrentAngles[legIndex][1] '
+    int femurDirectionAngle;
+    if(kneeAngle > servoCurrentAngles[legIndex][0]) {
+      femurDirectionAngle = 1;
+    }
+    else{
+      femurDirectionAngle = -1;
+    }
+    
+    // actual femur movement
+    HCPCA9685.Servo(femurServoIndex, map(servoCurrentAngles[legIndex][1] + femurDirectionAngle, 0, 180, 1, 450));
+    servoCurrentAngles[legIndex][0] += femurDirectionAngle;
   }
 }
 
