@@ -10,7 +10,7 @@ HCPCA9685 HCPCA9685(I2CAdd);
 //int servoRoms[12][12] = {{72, 180}, {22, 170}, {0, 0}, {10, 140}, {0, 180}, {0, 0}, {0, 70}, {35, 70}, {0, 0}, {10, 60}, {35, 140}, {0, 0}};
 //                      c             c           c            c           c           c           c             c
 int servoRoms[4][6] = {{40, 180, 90, 170, 0, 0}, {3, 120, 85, 156, 0, 0}, {0, 115, 90, 150, 0, 0}, {0, 115, 100, 180, 0, 0}};
-int servoCurrentAngles[4][3];
+int servoCurrentAngles[4][3] = {{40, 170, 0}, {3, 156, 0}, {0, 150, 0}, {0, 180, 0}};
 int leg[4][3] = {{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}};
 
 int legLenght = 10;
@@ -32,10 +32,8 @@ void setup() {
   inverseKinematics(2, 0);
   inverseKinematics(3, 0);
   
-  servoCurrentAngles[4][3] = {{40, 170, 0}, {3, 156, 0}, {0, 150, 0}, {0, 180, 0}};
-  
   // init pause
-  delay(3000);
+  delay(750);
 }
 
 void loop() {
@@ -50,7 +48,7 @@ void loop() {
   inverseKinematicsDelayed(1, 12);
   inverseKinematicsDelayed(2, 11);
   inverseKinematicsDelayed(3, 11);
-  delay(30);
+  delay(500);
 }
 
 void inverseKinematicsDelayed(int legIndex, double torsoHeight){
@@ -69,13 +67,31 @@ void inverseKinematicsDelayed(int legIndex, double torsoHeight){
   int femurMin = servoRoms[legIndex][2];
   int femurAngle = cosineTheorem(a, c, b);
 
-  // check to see if we add to or remove from the current angle 
-  int femurSign;
-  if(kneeAngle 
-
   if (kneeAngle != servoCurrentAngles[legIndex][0]) {
     // check to see if we add to or remove from the current angle 
     // the direction check is inside the leg movement 'if' because we need to check ' kneeAngle != servoCurrentAngles[legIndex][0] '
+
+    // !!! here we need to exclude leg 0 (aka down right leg)
+    // this is needed beacuse the leg is the first one build with a lot of engeneering errors
+    // therefore its closing knee angle is 40 instead of way lower angle like the others
+    // this causes problems in lower torso hights and prevent the leg from moving at all
+    // --- the code bellow is not optimized and it has to be deleted when the leg 0 is physically fixed
+    if (legIndex == 0 && kneeAngle < 45) {
+      int kneeDirectionAngle;
+      kneeDirectionAngle = -1;
+    }
+    else{
+      
+      // the actual code to be left when leg 0 is fixed
+      int kneeDirectionAngle;
+      if(kneeAngle > servoCurrentAngles[legIndex][0]) {
+        kneeDirectionAngle = 1;
+      }
+      else{
+        kneeDirectionAngle = -1;
+      }
+      
+    }
     int kneeDirectionAngle;
     if(kneeAngle > servoCurrentAngles[legIndex][0]) {
       kneeDirectionAngle = 1;
@@ -102,7 +118,7 @@ void inverseKinematicsDelayed(int legIndex, double torsoHeight){
     
     // actual femur movement
     HCPCA9685.Servo(femurServoIndex, map(servoCurrentAngles[legIndex][1] + femurDirectionAngle, 0, 180, 1, 450));
-    servoCurrentAngles[legIndex][0] += femurDirectionAngle;
+    servoCurrentAngles[legIndex][1] += femurDirectionAngle;
   }
 }
 
