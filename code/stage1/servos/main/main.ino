@@ -16,8 +16,6 @@ int leg[4][3] = {{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}};
 
 int legLenght = 10;
 
-//double startAngle;
-
 void setup() {
   //init the servo driver
   HCPCA9685.Init(SERVO_MODE);
@@ -45,11 +43,11 @@ void loop() {
 //  inverseKinematicsDelayed(3, 0);
 //  delay(3000);
 
-  inverseKinematicsDelayed(0, 12);
-  inverseKinematicsDelayed(1, 12);
-  inverseKinematicsDelayed(2, 11);
-  inverseKinematicsDelayed(3, 11);
-  delay(500);
+  inverseKinematicsDelayed(0, 11);
+  inverseKinematicsDelayed(1, 11);
+  inverseKinematicsDelayed(2, 12);
+  inverseKinematicsDelayed(3, 12);
+  delay(100);
 }
 
 void inverseKinematicsDelayed(int legIndex, double torsoHeight){
@@ -57,47 +55,24 @@ void inverseKinematicsDelayed(int legIndex, double torsoHeight){
   // provides smooth movement to the calculated target angle
   // !!! this function needs to be looped inside ' loop() '
   
-  int a = legLenght;
+  int a = legLenght; 
   int b = a;
   double c = torsoHeight;
 
-  int kneeServoIndex = leg[legIndex][0];
-  int kneeMin = servoRoms[legIndex][0];
-  int kneeAngle = cosineTheorem(a, b, c)/2;
-  int femurServoIndex = leg[legIndex][1];
+  int kneeServoIndex = leg[legIndex][0]; 
+  int kneeMin = servoRoms[legIndex][0]; 
+  int kneeAngle = cosineTheorem(a, b, c)/2; 
+  int femurServoIndex = leg[legIndex][1]; 
   int femurMin = servoRoms[legIndex][2];
-  int femurAngle = cosineTheorem(a, c, b);
+  int femurMax = servoRoms[legIndex][3];
+  int femurAngle = cosineTheorem(a, c, b)/2; 
 
-  if (kneeAngle != servoCurrentAngles[legIndex][0]) {
+  if (kneeMin + kneeAngle != servoCurrentAngles[legIndex][0]) {
     // check to see if we add to or remove from the current angle 
     // the direction check is inside the leg movement 'if' because we need to check ' kneeAngle != servoCurrentAngles[legIndex][0] '
-
-    // !!! here we need to exclude leg 0 (aka down right leg)
-    // this is needed beacuse the leg is the first one build with a lot of engeneering errors
-    // therefore its closing knee angle is 40 instead of way lower angle like the others
-    // this causes problems in lower torso hights and prevent the leg from moving at all
-    // --- the code bellow is not optimized and it has to be deleted when the leg 0 is physically fixed
-
-    // TODO: figure out why leg 0 knee servo is closing instead of opeing during the delayed ik
     
-    if (legIndex == 0 && kneeAngle < 45) {
-      int kneeDirectionAngle;
-      kneeDirectionAngle = -1;
-    }
-    else{
-      
-      // the actual code to be left when leg 0 is fixed
-      int kneeDirectionAngle;
-      if(kneeAngle > servoCurrentAngles[legIndex][0]) {
-        kneeDirectionAngle = 1;
-      }
-      else{
-        kneeDirectionAngle = -1;
-      }
-      
-    }
     int kneeDirectionAngle;
-    if(kneeAngle > servoCurrentAngles[legIndex][0]) {
+    if(kneeMin + kneeAngle > servoCurrentAngles[legIndex][0]) { // 33
       kneeDirectionAngle = 1;
     }
     else{
@@ -109,11 +84,11 @@ void inverseKinematicsDelayed(int legIndex, double torsoHeight){
     servoCurrentAngles[legIndex][0] += kneeDirectionAngle;
   }
   
-  if (femurAngle != servoCurrentAngles[legIndex][1]) {
+  if (femurMax - femurAngle != servoCurrentAngles[legIndex][1]) {
     // check to see if we add to or remove from the current angle 
     // the direction check is inside the leg movement 'if' because we need to check ' femurAngle != servoCurrentAngles[legIndex][1] '
     int femurDirectionAngle;
-    if(kneeAngle > servoCurrentAngles[legIndex][0]) {
+    if(femurMax - kneeAngle > servoCurrentAngles[legIndex][0]) {
       femurDirectionAngle = 1;
     }
     else{
@@ -121,10 +96,11 @@ void inverseKinematicsDelayed(int legIndex, double torsoHeight){
     }
     
     // actual femur movement
-    HCPCA9685.Servo(femurServoIndex, map(servoCurrentAngles[legIndex][1] + femurDirectionAngle, 0, 180, 1, 450));
-    servoCurrentAngles[legIndex][1] += femurDirectionAngle;
+    HCPCA9685.Servo(femurServoIndex, map(servoCurrentAngles[legIndex][1] - femurDirectionAngle, 0, 180, 1, 450));
+    servoCurrentAngles[legIndex][1] -= femurDirectionAngle;
   }
-}
+  
+} 
 
 void inverseKinematics(int legIndex, double torsoHeight){
   int a = legLenght;
@@ -137,7 +113,7 @@ void inverseKinematics(int legIndex, double torsoHeight){
   int femurServoIndex = leg[legIndex][1];
   int femurMin = servoRoms[legIndex][2];
   int femurMax = servoRoms[legIndex][3];
-  int femurAngle = cosineTheorem(a, c, b);
+  int femurAngle = cosineTheorem(a, c, b)/2;
 
   //knee
   HCPCA9685.Servo(kneeServoIndex, map(kneeMin + kneeAngle, 0, 180, 1, 450));
