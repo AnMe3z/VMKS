@@ -36,18 +36,45 @@ void setup() {
 }
 
 void loop() {
+  
+  standUp();
+  delay(3000);
+  
+  layDown();
+  delay(3000);
+  
+}
 
-//  inverseKinematicsDelayed(0, 0);
-//  inverseKinematicsDelayed(1, 0);
-//  inverseKinematicsDelayed(2, 0);
-//  inverseKinematicsDelayed(3, 0);
-//  delay(3000);
+void standUp(){
+  
+  int i = 0;
 
-  inverseKinematicsDelayed(0, 11);
-  inverseKinematicsDelayed(1, 11);
-  inverseKinematicsDelayed(2, 12);
-  inverseKinematicsDelayed(3, 12);
-  delay(100);
+//  while(servoCurrentAngles[0][1] != servoRoms[0][3] - cosineTheorem(legLenght, legLenght, targetTorso)/2 ){
+  while(i < 50){
+    inverseKinematicsDelayed(0, 11);
+    inverseKinematicsDelayed(1, 11);
+    inverseKinematicsDelayed(2, 11);
+    inverseKinematicsDelayed(3, 11);
+    delay(50);
+    i++;
+  }
+  
+}
+
+void layDown(){
+  
+  int i = 0;
+
+//  while(servoCurrentAngles[0][1] != servoRoms[0][3] - cosineTheorem(legLenght, legLenght, targetTorso)/2 ){
+  while(i < 50){
+    inverseKinematicsDelayed(0, 0);
+    inverseKinematicsDelayed(1, 0);
+    inverseKinematicsDelayed(2, 01);
+    inverseKinematicsDelayed(3, 0);
+    delay(50);
+    i++;
+  }
+  
 }
 
 void inverseKinematicsDelayed(int legIndex, double torsoHeight){
