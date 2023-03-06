@@ -53,8 +53,8 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             OutputStream outputStream = btSocket.getOutputStream();
-            System.out.println("bozo");
-            outputStream.write(49);   
+            System.out.println("bruh");
+            outputStream.write(49);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -76,12 +76,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        try {
-            btSocket.close();
-            System.out.println(btSocket.isConnected());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
     //All MACs (with ESP):[E0:62:67:47:19:AD, 55:0F:63:31:54:3D, FC:58:FA:2F:4C:2C, AA:F0:36:2F:B6:63, 80:57:19:E8:43:8F, 78:21:84:E0:B8:CA, 41:42:4C:F8:B4:A0, 58:FB:84:86:29:04, FF:FF:38:59:B5:B3, FC:58:FA:4B:E8:7F]
     //Without ESP: [E0:62:67:47:19:AD, 55:0F:63:31:54:3D, FC:58:FA:2F:4C:2C, AA:F0:36:2F:B6:63, 80:57:19:E8:43:8F, 41:42:4C:F8:B4:A0, 58:FB:84:86:29:04, FF:FF:38:59:B5:B3, FC:58:FA:4B:E8:7F]
