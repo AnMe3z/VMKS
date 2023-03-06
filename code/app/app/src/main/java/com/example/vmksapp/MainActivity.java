@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             OutputStream outputStream = btSocket.getOutputStream();
             System.out.println("bozo");
-            outputStream.write(49);
+            outputStream.write(49);   
         } catch (IOException e) {
             e.printStackTrace();
         }
