@@ -40,10 +40,46 @@ void loop()
           delay(50);
         }
       }
+    if(Serial.read() == 50)
+      {
+        for(int i = 65; i <= 90; i++) 
+        {
+          Serial.write((char)i);
+          SerialBT.write((char)i);
+          delay(50);
+        }
+      }
+    if(Serial.read() == 51)
+      {
+        for(int i = 65; i <= 90; i++) 
+        {
+          Serial.write((char)i);
+          SerialBT.write((char)i);
+          delay(50);
+        }
+      }
   }
   if (SerialBT.available()) 
   {
     if(SerialBT.read() == 49)
+      {
+        for(int i = 65; i <= 90; i++) 
+        {
+          Serial.write((char)i);
+          SerialBT.write((char)i);
+          delay(50);
+        }
+      }
+    if(Serial.read() == 50)
+      {
+        for(int i = 65; i <= 90; i++) 
+        {
+          Serial.write((char)i);
+          SerialBT.write((char)i);
+          delay(50);
+        }
+      }
+    if(Serial.read() == 51)
     {
       for(int i = 65; i <= 90; i++) 
       {

@@ -85,16 +85,17 @@ public class MainActivity extends AppCompatActivity {
         createButtonListener((Button) findViewById(R.id.button1), outputStream, 49);
         createButtonListener((Button) findViewById(R.id.button2), outputStream, 50);
         createButtonListener((Button) findViewById(R.id.button3), outputStream, 51);
+        createButtonListener((Button) findViewById(R.id.button4), outputStream, 52);
     }
 
-    public void createButtonListener(Button btn, OutputStream outputStream, int moronicMessage) {
+    public void createButtonListener(Button btn, OutputStream outputStream, int message) {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 System.out.println("Clicked " + btn.getText());
-                System.out.println("Message " + moronicMessage);
+                System.out.println("Message " + message);
                 try {
-                    outputStream.write(moronicMessage);
+                    outputStream.write(message);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
