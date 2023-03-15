@@ -36,43 +36,53 @@ void setup() {
 }
 
 void loop() {
-  
   standUp();
   delay(3000);
   
-//  layDown();
-//  delay(3000);
-  
+  trustMovement();
+  standUp();
+  trustMovement();
+  standUp();
+  delay(3000);
 }
+
+// --- up and down
 
 void standUp(){
-  double i = 1;
-
-  while (i <= 11) {
-    i += 0.2;
-    inverseKinematics(0, i);
-    inverseKinematics(1, i);
-    inverseKinematics(2, i);
-    inverseKinematics(3, i);
-    delay(100);
-  }
-}
-
-void layDown(){
   
   int i = 0;
 
 //  while(servoCurrentAngles[0][1] != servoRoms[0][3] - cosineTheorem(legLenght, legLenght, targetTorso)/2 ){
   while(i < 50){
-    inverseKinematicsDelayed(0, 0);
-    inverseKinematicsDelayed(1, 0);
-    inverseKinematicsDelayed(2, 01);
-    inverseKinematicsDelayed(3, 0);
+    inverseKinematicsDelayed(0, 11);
+    inverseKinematicsDelayed(1, 11);
+    inverseKinematicsDelayed(2, 11);
+    inverseKinematicsDelayed(3, 11);
     delay(50);
     i++;
   }
   
 }
+
+void trustMovement(){
+  
+  inverseKinematics(0, 0);
+  inverseKinematics(1, 0);
+  inverseKinematics(2, 0);
+  inverseKinematics(3, 0);
+  int i = 11;
+  
+  while(i > 1){
+    inverseKinematicsDelayed(0, i);
+    inverseKinematicsDelayed(1, i);
+    delay(50);
+    i-=0.03;
+  }
+  
+  
+}
+
+// --- inverse kinematics
 
 void inverseKinematicsDelayed(int legIndex, double torsoHeight){
   // --- improved version of inverseKinematics() ---
