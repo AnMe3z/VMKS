@@ -1,0 +1,57 @@
+/* Online Java Compiler and Editor */
+public class HelloWorld{
+
+     public static void main(String []args){
+        System.out.println("Hello, World!");
+        
+        inverseKinematicsXMovement(1, 10, 1);
+        inverseKinematicsXMovement(1, 10, 2);
+     }
+     
+     public static void inverseKinematicsXMovement(int legIndex, double torsoHeight, double xMovement){
+        System.out.println("Inputs: ");
+        System.out.println("legIndex: " + legIndex);
+        System.out.println("torsoHeight: " + torsoHeight);
+        System.out.println("xMovement: " + xMovement);
+        System.out.println(" --- --- ---");
+        // theta is the femur offset angle that is added  to the inverse kinematics
+          double theta = Math.pow(Math.tan(xMovement / torsoHeight), -1);
+        System.out.println("theta: " + theta);
+          double cNew = torsoHeight / Math.cos(theta);
+        System.out.println("cNew: " + cNew);
+        System.out.println(" --- --- ---");
+        
+          // --- inverse kinematics with offset
+          double a = 10;
+        System.out.println("a: " + a);
+          double b = a;
+        System.out.println("b: " + b);
+          double c = torsoHeight;
+        System.out.println("c: " + c);
+        System.out.println(" --- --- ---");
+        
+          double kneeAngle = cosineTheorem(a, b, c)/2.0;
+        System.out.println("kneeAngle: " + kneeAngle);
+          double femurAngle =cosineTheorem(a, c, b)/2.0;
+        System.out.println("kneeAngle: " + kneeAngle);
+        System.out.println(" --- --- ---");
+        
+          //knee
+        System.out.println("Knee final angle: " + (3 + kneeAngle));
+          
+          //femur
+        System.out.println("Femur final angle: " + (156 - femurAngle - theta));
+        System.out.println(" --- --- ---");
+        System.out.println(" --- --- ---");
+        System.out.println(" --- --- ---");
+     }
+     
+     public static double cosineTheorem(double a, double b, double c){
+          if (c == 0){
+            return 0;
+          }
+          else{
+            return Math.acos((b * b + a * a - c * c)/(2.0 * b * a)) * 57296 / 1000;
+          }
+    }
+}
