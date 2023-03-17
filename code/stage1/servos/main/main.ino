@@ -37,12 +37,22 @@ void setup() {
 
 void loop() {
   
-  standUp();
-  delay(3000);
+  walk();
+  delay(2000);
   
 //  layDown();
 //  delay(3000);
   
+}
+
+void walk(){
+  int legIndex = 1;
+  double torsoHeight = 10;
+  
+  inverseKinematics(1, torsoHeight);
+  delay(2000);
+  
+  inverseKinematicsXMovement(1, torsoHeight, 5);
 }
 
 void standUp(){
@@ -66,12 +76,46 @@ void layDown(){
   while(i < 50){
     inverseKinematicsDelayed(0, 0);
     inverseKinematicsDelayed(1, 0);
-    inverseKinematicsDelayed(2, 01);
+    inverseKinematicsDelayed(2, 0);
     inverseKinematicsDelayed(3, 0);
     delay(50);
     i++;
   }
   
+}
+
+void inverseKinematicsXMovement(int legIndex, double torsoHeight, double x){
+  
+  double theta = atan( tan( x / torsoHeight ) ) * 57296 / 1000;
+  double cNew = torsoHeight / cos(theta);
+
+  if(cNew < 0){
+    cNew *= -1;
+  }
+
+  // normal ik
+  
+  int a = legLenght;
+  int b = a;
+  double c = cNew;
+
+  int kneeServoIndex = leg[legIndex][0];
+  int kneeMin = servoRoms[legIndex][0];
+  int kneeAngle = cosineTheorem(a, b, c)/2;
+  int femurServoIndex = leg[legIndex][1];
+  int femurMin = servoRoms[legIndex][2];
+  int femurMax = servoRoms[legIndex][3];
+  int femurAngle = cosineTheorem(a, c, b)/2;
+
+  
+
+  //knee
+  HCPCA9685.Servo(kneeServoIndex, map(kneeMin + kneeAngle, 0, 180, 1, 450));
+  
+  //femur
+  HCPCA9685.Servo(femurServoIndex, map(femurMax - (femurAngle + theta), 0, 180, 1, 450));
+  
+  delay(500);
 }
 
 void inverseKinematicsDelayed(int legIndex, double torsoHeight){

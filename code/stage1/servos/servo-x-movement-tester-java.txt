@@ -4,8 +4,25 @@ public class HelloWorld{
      public static void main(String []args){
         System.out.println("Hello, World!");
         
-        inverseKinematicsXMovement(1, 10, 1);
-        inverseKinematicsXMovement(1, 10, 2);
+        int legLenght = 10;
+        int a = legLenght;
+        int b = a;
+        double c = 9;
+        
+        double x = 5;
+        System.out.println("kneeAngle: " + cosineTheorem(a, b, c));
+        System.out.println("femurAngle: " + cosineTheorem(a, c, b));
+        
+        System.out.println(" --- --- ---");
+        double theta = Math.toDegrees(Math.atan(Math.tan(x/c)));
+        System.out.println("theta degrees: " + theta);
+        
+        System.out.println(" --- --- ---");
+        
+        System.out.println("c new: " + c / Math.cos(theta));
+        
+        // inverseKinematicsXMovement(1, 10, 1);
+        // inverseKinematicsXMovement(1, 10, 2);
      }
      
      public static void inverseKinematicsXMovement(int legIndex, double torsoHeight, double xMovement){
@@ -15,7 +32,8 @@ public class HelloWorld{
         System.out.println("xMovement: " + xMovement);
         System.out.println(" --- --- ---");
         // theta is the femur offset angle that is added  to the inverse kinematics
-          double theta = Math.pow(Math.tan(xMovement / torsoHeight), -1);
+          double theta = Math.toDegrees(Math.atan(Math.tan(xMovement / torsoHeight)));
+        //   double theta = Math.pow(Math.tan(xMovement / torsoHeight), -1);
         System.out.println("theta: " + theta);
           double cNew = torsoHeight / Math.cos(theta);
         System.out.println("cNew: " + cNew);
