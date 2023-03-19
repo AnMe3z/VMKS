@@ -54,19 +54,19 @@ void loop()
   if (SerialBT.available()) 
   {
     receivedValueBT = SerialBT.read();
-    if (receivedValue == '1')
+    if (receivedValueBT == '1')
       {
         Serial.write("One");
       }
-    else if (receivedValue == '2')
+    else if (receivedValueBT == '2')
       {
         Serial.write("Two");
       }
-    else if (receivedValue == '3')
+    else if (receivedValueBT == '3')
       {
         Serial.write("Three");
       }
-    else if (receivedValue == '4')
+    else if (receivedValueBT == '4')
       {
         Serial.write("Four");
       }
