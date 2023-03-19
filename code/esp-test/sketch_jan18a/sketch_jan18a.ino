@@ -4,6 +4,8 @@
 const char *pin = "1234"; // Change this to more secure PIN.
 
 String device_name = "ESP32-BT-Slave";
+char receivedValue;
+char receivedValueBT;
 
 #if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
 #error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
@@ -31,63 +33,43 @@ void loop()
 {
   if (Serial.available()) 
   {
-    if(Serial.read() == 49)
+    receivedValue = Serial.read();
+    if (receivedValue == '1')
       {
-        for(int i = 65; i <= 90; i++) 
-        {
-          Serial.write((char)i);
-          SerialBT.write((char)i);
-          delay(50);
-        }
+        Serial.write("One");
       }
-    if(Serial.read() == 50)
+    else if (receivedValue == '2')
       {
-        for(int i = 65; i <= 90; i++) 
-        {
-          Serial.write((char)i);
-          SerialBT.write((char)i);
-          delay(50);
-        }
+        Serial.write("Two");
       }
-    if(Serial.read() == 51)
+    else if (receivedValue == '3')
       {
-        for(int i = 65; i <= 90; i++) 
-        {
-          Serial.write((char)i);
-          SerialBT.write((char)i);
-          delay(50);
-        }
+        Serial.write("Three");
+      }
+    else if (receivedValue == '4')
+      {
+        Serial.write("Four");
       }
   }
   if (SerialBT.available()) 
   {
-    if(SerialBT.read() == 49)
+    receivedValueBT = SerialBT.read();
+    if (receivedValue == '1')
       {
-        for(int i = 65; i <= 90; i++) 
-        {
-          Serial.write((char)i);
-          SerialBT.write((char)i);
-          delay(50);
-        }
+        Serial.write("One");
       }
-    if(Serial.read() == 50)
+    else if (receivedValue == '2')
       {
-        for(int i = 65; i <= 90; i++) 
-        {
-          Serial.write((char)i);
-          SerialBT.write((char)i);
-          delay(50);
-        }
+        Serial.write("Two");
       }
-    if(Serial.read() == 51)
-    {
-      for(int i = 65; i <= 90; i++) 
+    else if (receivedValue == '3')
       {
-        Serial.write((char)i);
-        SerialBT.write((char)i);
-        delay(50);
+        Serial.write("Three");
       }
-    }
+    else if (receivedValue == '4')
+      {
+        Serial.write("Four");
+      }
   }
   delay(20);
 }
