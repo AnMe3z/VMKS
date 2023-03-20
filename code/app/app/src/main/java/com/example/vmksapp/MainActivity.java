@@ -27,11 +27,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
-        System.out.println(btAdapter.getBondedDevices());
-
-        BluetoothDevice esp32 = btAdapter.getRemoteDevice("78:21:84:E0:B8:CA");
-        System.out.println(esp32.getName());
+       BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
+       System.out.println(btAdapter.getBondedDevices());
+       BluetoothDevice esp32 = btAdapter.getRemoteDevice("78:21:84:E0:B8:CA");        
+       System.out.println(esp32.getName());
 
         BluetoothSocket btSocket = null;
         int counter = 0;
@@ -103,5 +102,5 @@ public class MainActivity extends AppCompatActivity {
 
 
         });
-    }
+        }
 }
