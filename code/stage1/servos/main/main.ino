@@ -16,6 +16,7 @@ int leg[4][3] = {{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}};
 
 int legLenght = 10;
 int height = 1;
+int x = 0;
 
 void setup() {
   //init the servo driver
@@ -27,7 +28,7 @@ void setup() {
   // - stand up
 
   //make the robot to sit down
-  standDown();
+//  standDown();
   
   // init pause
   delay(750);
@@ -35,9 +36,28 @@ void setup() {
 
 void loop() {
 
-  standUp();
+  while(x < 4){
+    x++;
+    inverseKinematics(0, 7, x);
+    inverseKinematics(1, 7, x);
+    inverseKinematics(2, 7, x);
+    inverseKinematics(3, 7, x);
+    delay(300);
+  }
+  
+  while(x > 0){
+    x--;
+    inverseKinematics(0, 7, x);
+    inverseKinematics(1, 7, x);
+    inverseKinematics(2, 7, x);
+    inverseKinematics(3, 7, x);
+    delay(300);
+  }
+  
 
-  standDown();
+//  standUp();
+//
+//  standDown();
   
 }
 
@@ -46,10 +66,10 @@ void loop() {
 void standUp(){
   while(height < 15){
     height++;
-    inverseKinematics(0, height);
-    inverseKinematics(1, height);
-    inverseKinematics(2, height);
-    inverseKinematics(3, height);
+    inverseKinematics(0, height, 0);
+    inverseKinematics(1, height, 0);
+    inverseKinematics(2, height, 0);
+    inverseKinematics(3, height, 0);
     delay(300);
   }
 }
@@ -57,20 +77,27 @@ void standUp(){
 void standDown(){
   while(height > 0){
     height--;
-    inverseKinematics(0, height);
-    inverseKinematics(1, height);
-    inverseKinematics(2, height);
-    inverseKinematics(3, height);
+    inverseKinematics(0, height, 0);
+    inverseKinematics(1, height, 0);
+    inverseKinematics(2, height, 0);
+    inverseKinematics(3, height, 0);
     delay(300);
   }
 }
 
 // --- essensials
 
-void inverseKinematics(int legIndex, double torsoHeight){
+void inverseKinematics(int legIndex, double torsoHeight, double x){
+  double theta = atan( tan( x / torsoHeight ) ) * 57296 / 1000;
+  double cNew = sqrt(torsoHeight*torsoHeight + x*x);
+
+  if(cNew < 0){
+    cNew *= -1;
+  }
+  
   int a = legLenght;
   int b = a;
-  double c = torsoHeight;
+  double c = cNew;
 
   int kneeServoIndex = leg[legIndex][0];
   int kneeMin = servoRoms[legIndex][0];
@@ -79,6 +106,7 @@ void inverseKinematics(int legIndex, double torsoHeight){
   int femurMin = servoRoms[legIndex][2];
   int femurMax = servoRoms[legIndex][3];
   int femurAngle = 90 - cosineTheorem(a, c, b);
+  femurAngle += theta;
 
   //knee
   HCPCA9685.Servo(kneeServoIndex, map(kneeMin + kneeAngle, 0, 180, 1, 450));
