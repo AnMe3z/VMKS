@@ -28,43 +28,53 @@ void setup() {
   // - stand up
 
   //make the robot to sit down
-//  standDown();
+  standDown();
   
   // init pause
   delay(750);
 }
 
 void loop() {
+  
+  standUp(5);
 
-  while(x < 4){
+  while(x > -2){
+    x--;
+    inverseKinematics(0, height, x);
+    inverseKinematics(1, height, x);
+    inverseKinematics(2, height, x);
+    inverseKinematics(3, height, x);
+    delay(300);
+  }
+  
+  while(x < 2){
     x++;
-    inverseKinematics(0, 7, x);
-    inverseKinematics(1, 7, x);
-    inverseKinematics(2, 7, x);
-    inverseKinematics(3, 7, x);
+    inverseKinematics(0, height, x);
+    inverseKinematics(1, height, x);
+    inverseKinematics(2, height, x);
+    inverseKinematics(3, height, x);
     delay(300);
   }
   
   while(x > 0){
     x--;
-    inverseKinematics(0, 7, x);
-    inverseKinematics(1, 7, x);
-    inverseKinematics(2, 7, x);
-    inverseKinematics(3, 7, x);
+    inverseKinematics(0, height, x);
+    inverseKinematics(1, height, x);
+    inverseKinematics(2, height, x);
+    inverseKinematics(3, height, x);
     delay(300);
   }
-  
 
-//  standUp();
-//
-//  standDown();
+  delay(1000);
+
+  standDown();
   
 }
 
 // --- movements
 
-void standUp(){
-  while(height < 15){
+void standUp(int targetHeight){
+  while(height < targetHeight){
     height++;
     inverseKinematics(0, height, 0);
     inverseKinematics(1, height, 0);
