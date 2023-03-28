@@ -15,8 +15,8 @@ int servoCurrentAngles[4][3] = {{40, 170, 0}, {3, 156, 0}, {0, 150, 0}, {0, 180,
 int leg[4][3] = {{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}};
 
 int legLenght = 10;
-int height = 1;
-int x = 0;
+double height = 1;
+double x = 0;
 
 void setup() {
   //init the servo driver
@@ -38,34 +38,7 @@ void loop() {
   
   standUp(5);
 
-  while(x > -2){
-    x--;
-    inverseKinematics(0, height, x);
-    inverseKinematics(1, height, x);
-    inverseKinematics(2, height, x);
-    inverseKinematics(3, height, x);
-    delay(300);
-  }
-  
-  while(x < 2){
-    x++;
-    inverseKinematics(0, height, x);
-    inverseKinematics(1, height, x);
-    inverseKinematics(2, height, x);
-    inverseKinematics(3, height, x);
-    delay(300);
-  }
-  
-  while(x > 0){
-    x--;
-    inverseKinematics(0, height, x);
-    inverseKinematics(1, height, x);
-    inverseKinematics(2, height, x);
-    inverseKinematics(3, height, x);
-    delay(300);
-  }
-
-  delay(1000);
+  xTestMovement();
 
   standDown();
   
@@ -73,26 +46,66 @@ void loop() {
 
 // --- movements
 
-void standUp(int targetHeight){
+void standUp(double targetHeight){
+  double servoStep = 0.25;
+  int delayTime = 50;
+  
   while(height < targetHeight){
-    height++;
+    height += servoStep;
     inverseKinematics(0, height, 0);
     inverseKinematics(1, height, 0);
     inverseKinematics(2, height, 0);
     inverseKinematics(3, height, 0);
-    delay(300);
+    delay(delayTime);
   }
 }
 
 void standDown(){
+  double servoStep = 0.25;
+  int delayTime = 50;
+  
   while(height > 0){
-    height--;
+    height -= servoStep;
     inverseKinematics(0, height, 0);
     inverseKinematics(1, height, 0);
     inverseKinematics(2, height, 0);
     inverseKinematics(3, height, 0);
-    delay(300);
+    delay(delayTime);
   }
+}
+
+void xTestMovement(){
+  double servoStep = 0.25;
+  int delayTime = 50;
+  
+  while(x > -2){
+    x -= servoStep;
+    inverseKinematics(0, height, x);
+    inverseKinematics(1, height, x);
+    inverseKinematics(2, height, x);
+    inverseKinematics(3, height, x);
+    delay(delayTime);
+  }
+  
+  while(x < 2){
+    x += servoStep;
+    inverseKinematics(0, height, x);
+    inverseKinematics(1, height, x);
+    inverseKinematics(2, height, x);
+    inverseKinematics(3, height, x);
+    delay(delayTime);
+  }
+  
+  while(x > 0){
+    x -= servoStep;
+    inverseKinematics(0, height, x);
+    inverseKinematics(1, height, x);
+    inverseKinematics(2, height, x);
+    inverseKinematics(3, height, x);
+    delay(delayTime);
+  }
+
+  delay(1000);
 }
 
 // --- essensials
