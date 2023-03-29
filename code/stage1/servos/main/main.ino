@@ -39,14 +39,16 @@ void loop() {
   
   standUp(7);
 
-  pitchTestMovement();
+  walk();
 
-  xTestMovement();
-  
-  hold();
-  delay(3000);
-
-  standDown();
+//  pitchTestMovement();
+//
+//  xTestMovement();
+//  
+//  hold();
+//  delay(3000);
+//
+//  standDown();
   
 }
 
@@ -78,6 +80,53 @@ void standDown(){
     inverseKinematics(3, height, 0);
     delay(delayTime);
   }
+}
+
+void walk(){
+  int archSteps = 10;
+  double angle = 90;
+  double radius = 3.0;
+  double cx = radius;
+  double cy = height;
+  double wx;
+  double wy;
+
+  while(angle > 0){
+    angle -= 180/archSteps;
+
+    wx = cx + radius * cos(angle);
+    wy = cy + radius * sin(angle);
+
+    inverseKinematics(1, wy, wx);
+    inverseKinematics(2, wy, wx);
+
+    delay(150);
+  }
+
+  inverseKinematics(1, height, 0);
+  inverseKinematics(2, height, 0);
+
+  delay(1000);
+  
+  angle = 90;
+  
+  while(angle > 0){
+    angle -= 180/archSteps;
+
+    wx = cx + radius * cos(angle);
+    wy = cy + radius * sin(angle);
+
+    inverseKinematics(0, wy, wx);
+    inverseKinematics(3, wy, wx);
+
+    delay(150);
+  }
+
+  inverseKinematics(0, height, 0);
+  inverseKinematics(3, height, 0);
+  
+  delay(1000);
+  
 }
 
 void hold(){
