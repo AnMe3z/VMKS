@@ -39,14 +39,14 @@ void loop() {
   
   standUp(7);
 
-  walk();
+//  walk();
 
-//  pitchTestMovement();
-//
+  pitchTestMovement();
+
 //  xTestMovement();
 //  
-//  hold();
-//  delay(3000);
+  hold();
+  delay(3000);
 //
 //  standDown();
   
@@ -132,10 +132,10 @@ void walk(){
 void hold(){
   int delayTime = 50;
   
-  inverseKinematics(0, height - pitch[0], 0);
-  inverseKinematics(1, height - pitch[1], 0);
-  inverseKinematics(2, height - pitch[2], 0);
-  inverseKinematics(3, height - pitch[3], 0);
+  inverseKinematics(0, height, 0);
+  inverseKinematics(1, height, 0);
+  inverseKinematics(2, height, 0);
+  inverseKinematics(3, height, 0);
 
   delay(delayTime);
 }
@@ -185,10 +185,10 @@ void pitchTestMovement(){
     pitch[1] += servoStep*2;
     pitch[2] += 0;
     pitch[3] += servoStep;
-    inverseKinematics(0, height - pitch[0], 0);
-    inverseKinematics(1, height - pitch[1], 0);
-    inverseKinematics(2, height - pitch[2], 0);
-    inverseKinematics(3, height - pitch[3], 0);
+    inverseKinematics(0, height, 0);
+    inverseKinematics(1, height, 0);
+    inverseKinematics(2, height, 0);
+    inverseKinematics(3, height, 0);
     delay(delayTime);
   }
   while(i > 0){
@@ -197,10 +197,10 @@ void pitchTestMovement(){
     pitch[1] -= servoStep;
     pitch[2] += servoStep;
     pitch[3] += servoStep;
-    inverseKinematics(0, height - pitch[0], 0);
-    inverseKinematics(1, height - pitch[1], 0);
-    inverseKinematics(2, height - pitch[2], 0);
-    inverseKinematics(3, height - pitch[3], 0);
+    inverseKinematics(0, height, 0);
+    inverseKinematics(1, height, 0);
+    inverseKinematics(2, height, 0);
+    inverseKinematics(3, height, 0);
     delay(delayTime);
   }
   while(i < 12){
@@ -209,10 +209,10 @@ void pitchTestMovement(){
     pitch[1] -= servoStep;
     pitch[2] += servoStep;
     pitch[3] -= servoStep;
-    inverseKinematics(0, height - pitch[0], 0);
-    inverseKinematics(1, height - pitch[1], 0);
-    inverseKinematics(2, height - pitch[2], 0);
-    inverseKinematics(3, height - pitch[3], 0);
+    inverseKinematics(0, height, 0);
+    inverseKinematics(1, height, 0);
+    inverseKinematics(2, height, 0);
+    inverseKinematics(3, height, 0);
     delay(delayTime);
   }
   while(i > 0){
@@ -221,10 +221,10 @@ void pitchTestMovement(){
     pitch[1] += servoStep;
     pitch[2] -= servoStep;
     pitch[3] -= servoStep;
-    inverseKinematics(0, height - pitch[0], 0);
-    inverseKinematics(1, height - pitch[1], 0);
-    inverseKinematics(2, height - pitch[2], 0);
-    inverseKinematics(3, height - pitch[3], 0);
+    inverseKinematics(0, height, 0);
+    inverseKinematics(1, height, 0);
+    inverseKinematics(2, height, 0);
+    inverseKinematics(3, height, 0);
     delay(delayTime);
   }
   while(i < 12){
@@ -233,10 +233,10 @@ void pitchTestMovement(){
     pitch[1] -= servoStep;
     pitch[2] -= servoStep;
     pitch[3] += 0;
-    inverseKinematics(0, height - pitch[0], 0);
-    inverseKinematics(1, height - pitch[1], 0);
-    inverseKinematics(2, height - pitch[2], 0);
-    inverseKinematics(3, height - pitch[3], 0);
+    inverseKinematics(0, height, 0);
+    inverseKinematics(1, height, 0);
+    inverseKinematics(2, height, 0);
+    inverseKinematics(3, height, 0);
     delay(delayTime);
   }
 }
@@ -244,6 +244,8 @@ void pitchTestMovement(){
 // --- essensials
 
 void inverseKinematics(int legIndex, double torsoHeight, double x){
+  torsoHeight -=  - pitch[legIndex];
+  
   double theta = atan( tan( x / torsoHeight ) ) * 57296 / 1000;
   double cNew = sqrt(torsoHeight*torsoHeight + x*x);
 
