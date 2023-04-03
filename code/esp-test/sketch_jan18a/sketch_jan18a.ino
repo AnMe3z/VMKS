@@ -4,7 +4,7 @@
 const char *pin = "1234"; // Change this to more secure PIN.
 
 String device_name = "ESP32-BT-Slave";
-char receivedValue;
+char receivedValue; //debugging
 char receivedValueBT;
 
 #if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
@@ -31,26 +31,27 @@ void setup()
 
 void loop() 
 {
-  if (Serial.available()) 
-  {
-    receivedValue = Serial.read();
-    if (receivedValue == '1')
-      {
-        Serial.write("One");
-      }
-    else if (receivedValue == '2')
-      {
-        Serial.write("Two");
-      }
-    else if (receivedValue == '3')
-      {
-        Serial.write("Three");
-      }
-    else if (receivedValue == '4')
-      {
-        Serial.write("Four");
-      }
-  }
+  // if (Serial.available()) 
+  // {
+  //   receivedValue = Serial.read();
+  //   if (receivedValue == '1')
+  //     {
+  //       Serial.write("One");
+  //     }
+  //   else if (receivedValue == '2')
+  //     {
+  //       Serial.write("Two");
+  //     }
+  //   else if (receivedValue == '3')
+  //     {
+  //       Serial.write("Three");
+  //     }
+  //   else if (receivedValue == '4')
+  //     {
+  //       Serial.write("Four");
+  //     }
+  // }
+  //debug purposes
   if (SerialBT.available()) 
   {
     receivedValueBT = SerialBT.read();

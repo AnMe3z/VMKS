@@ -2,7 +2,9 @@ package com.example.vmksapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -11,6 +13,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,6 +27,13 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if(ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.BLUETOOTH_SCAN)
+                != PackageManager.PERMISSION_GRANTED)
+        {
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    Manifest.permission.BLUETOOTH_SCAN,
+                    requestCode);
+        }
         System.out.println("test");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -94,5 +104,16 @@ public class MainActivity extends AppCompatActivity {
 
 
         });
+    }
+
+    public void checkPermission(String permission, int requestCode)
+    {
+        // Checking if permission is not granted
+        if (ContextCompat.checkSelfPermission(MainActivity.this, permission) == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[] { permission }, requestCode);
+        }
+        else {
+            Toast.makeText(MainActivity.this, "Permission already granted", Toast.LENGTH_SHORT).show();
+        }
     }
 }
