@@ -43,5 +43,27 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button2" />
 
+    <!--Button to request storage permission-->
+    <Button
+        android:id="@+id/storage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Storage"
+        android:layout_marginTop="16dp"
+        android:padding="8dp"
+        android:layout_below="@id/button3"
+        android:layout_centerHorizontal="true"/>
+
+    <!--Button to request camera permission-->
+    <Button
+        android:id="@+id/camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Camera"
+        android:layout_marginTop="16dp"
+        android:padding="8dp"
+        android:layout_below="@id/storage"
+        android:layout_centerHorizontal="true"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
