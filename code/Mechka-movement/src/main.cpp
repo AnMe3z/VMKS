@@ -55,6 +55,12 @@ void loop() {
   standUp(5);
 
   walk();
+  
+  standUp(5);
+
+  pitchTestMovement();
+
+  xTestMovement();
 
   standDown();
   
@@ -77,34 +83,9 @@ void walk(){
 
   //launch forward
   // xMovement(- radius);
-
-  delay(1000);
   
   double cx[4] = {x[0] + radius, x[1] + radius, x[2] + radius, x[3] + radius};
   double cy[4] = {y[0], y[1], y[2], y[3]};
-
-  // ### test
-  // inverseKinematics(1, 5.3090167660379 ,  0.04894340951367282);
-  // delay(500);
-  // inverseKinematics(1, 5.58778507963905 ,  0.19098288018502607);
-  // delay(500);
-  // inverseKinematics(1, 0.809016884614894 ,  0.4122145966358034 );
-  // delay(500);
-  // inverseKinematics(1, 0.9510564668343406 ,  0.6909828534003644 );
-  // delay(500);
-  // inverseKinematics(1, 0.9999999999999911 ,  0.9999998666179054 );
-  // delay(500);
-  // inverseKinematics(1, 0.9510565492690153 ,  1.3090168928918176 );
-  // delay(500);
-  // inverseKinematics(1, 0.8090170414149617 ,  1.5877851875474425 );
-  // delay(500);
-  // inverseKinematics(1, 0.5877852954558248 ,  1.809016963014935 );
-  // delay(500);
-  // inverseKinematics(1, 0.3090170197457293 ,  1.9510565080516864 );
-  // delay(500);
-  // inverseKinematics(1, 0.0 ,  2.0 );
-  // delay(500);
-  // ### test
 
   while(angle > 0){
     angle -= 180/archSteps;
@@ -117,34 +98,12 @@ void walk(){
     y[2] = cy[2] - radius * sin((angle * 71) / 4068);
     inverseKinematics(2, y[2], x[2]);
 
-    // if(count < 9 && rising){
-    //   count++;
-    //   if(count == 9){
-    //     rising = false;
-    //   }
-    // }
-    // else{
-    //   count--;
-    // }
-
-    // if(rising){
-    //   y[0] += lUDStep;
-    //   y[3] += lUDStep;
-    //   count++;
-    // }
-    // else{
-    //   y[0] -= lUDStep;
-    //   y[3] -= lUDStep;
-    //   count--;
-    // }
-
     inverseKinematics(0, y[0], x[0]);
     inverseKinematics(3, y[3], x[3]);
 
     delay(150);
   }
 
-  delay(1000);
   
   // reset the angle
   angle = 180;
@@ -172,7 +131,60 @@ void walk(){
     delay(150);
   }
   
-  delay(1000);
+  // reset variables
+  angle = 180;
+  double bx[4] = {x[0] + radius, x[1] + radius, x[2] + radius, x[3] + radius};
+  double by[4] = {y[0], y[1], y[2], y[3]};
+  memcpy(cx, bx, sizeof(cx));
+  memcpy(cy, by, sizeof(cy));
+  y[0] = height;
+  y[3] = height;
+
+  while(angle > 0){
+    angle -= 180/archSteps;
+
+    x[1] = cx[1] + radius * cos((angle * 71) / 4068);
+    y[1] = cy[1] - radius * sin((angle * 71) / 4068);
+    inverseKinematics(1, y[1], x[1]);
+
+    x[2] = cx[2] + radius * cos((angle * 71) / 4068);
+    y[2] = cy[2] - radius * sin((angle * 71) / 4068);
+    inverseKinematics(2, y[2], x[2]);
+
+      //leg drift
+      x[0] -= lDStep;
+      inverseKinematics(0, y[0], x[0]);
+      x[3] -= lDStep;
+      inverseKinematics(3, y[3], x[3]);
+
+    delay(150);
+  }
+  
+  // reset the angle
+  angle = 180;
+
+  y[1] = height;
+  y[2] = height;
+  
+  // while(angle > 0){ // loops 18 times
+  //     angle -= 180/archSteps;
+
+  //     x[0] = cx[0] + radius * cos((angle * 71) / 4068);
+  //     y[0] = cy[0] - radius * sin((angle * 71) / 4068);
+  //     inverseKinematics(0, y[0], x[0]);
+
+  //     x[3] = cx[3] + radius * cos((angle * 71) / 4068);
+  //     y[3] = cy[3] - radius * sin((angle * 71) / 4068);
+  //     inverseKinematics(3, y[3], x[3]);
+
+  //     //leg drift
+  //     x[1] -= lDStep;
+  //     inverseKinematics(1, y[1], x[1]);
+  //     x[2] -= lDStep;
+  //     inverseKinematics(2, y[2], x[2]);
+
+  //   delay(150);
+  // }
   
 }
 
@@ -265,9 +277,10 @@ void hold(){
 void xTestMovement(){
   // double servoStep = 0.25;
   // int delayTime = 50;
+  // double tX = x[0];
   
-  // while(x > -2){
-  //   x -= servoStep;
+  // while(tX > -2){
+  //   tX -= servoStep;
   //   inverseKinematics(0, height, x);
   //   inverseKinematics(1, height, x);
   //   inverseKinematics(2, height, x);
@@ -275,8 +288,8 @@ void xTestMovement(){
   //   delay(delayTime);
   // }
   
-  // while(x < 2){
-  //   x += servoStep;
+  // while(tX < 2){
+  //   tX += servoStep;
   //   inverseKinematics(0, height, x);
   //   inverseKinematics(1, height, x);
   //   inverseKinematics(2, height, x);
@@ -284,8 +297,8 @@ void xTestMovement(){
   //   delay(delayTime);
   // }
   
-  // while(x > 0){
-  //   x -= servoStep;
+  // while(tX > 0){
+  //   tX -= servoStep;
   //   inverseKinematics(0, height, x);
   //   inverseKinematics(1, height, x);
   //   inverseKinematics(2, height, x);
