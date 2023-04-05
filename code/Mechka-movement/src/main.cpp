@@ -22,7 +22,7 @@ double y[4] = {0 ,0, 0, 0};
 
 //all functions predeclaration
 // complex movements
-void walk();
+void walk(int speed);
 // basic movements
 void standDown();
 void standUp(double targetHeight);
@@ -58,7 +58,11 @@ void loop() {
 
   xTestMovement();
 
-  walk();
+  walk(50);
+  walk(50);
+  walk(50);
+  walk(50);
+  walk(50);
   delay(1000);
 
   standDown();
@@ -67,7 +71,7 @@ void loop() {
 
 // --- complex movements
 
-void walk(){
+void walk(int speed){
   int archSteps = 10;
   double angle = 180;
   double radius = 1.0;
@@ -100,7 +104,7 @@ void walk(){
     inverseKinematics(0, y[0], x[0]);
     inverseKinematics(3, y[3], x[3]);
 
-    delay(150);
+    delay(speed);
   }
 
   
@@ -127,7 +131,7 @@ void walk(){
       x[2] -= lDStep;
       inverseKinematics(2, y[2], x[2]);
 
-    delay(150);
+    delay(speed);
   }
   
   // reset variables
@@ -140,15 +144,7 @@ void walk(){
   y[3] = height;
 
   while(angle > 0){
-    angle -= 180/archSteps;
-
-    x[1] = cx[1] + radius * cos((angle * 71) / 4068);
-    y[1] = cy[1] - radius * sin((angle * 71) / 4068);
-    inverseKinematics(1, y[1], x[1]);
-
-    x[2] = cx[2] + radius * cos((angle * 71) / 4068);
-    y[2] = cy[2] - radius * sin((angle * 71) / 4068);
-    inverseKinematics(2, y[2], x[2]);
+    angle -= 180/archSteps*2;
 
       //leg drift
       x[0] -= lDStep;
@@ -159,31 +155,6 @@ void walk(){
     delay(150);
   }
   
-  // reset the angle
-  angle = 180;
-
-  y[1] = height;
-  y[2] = height;
-  
-  // while(angle > 0){ // loops 18 times
-  //     angle -= 180/archSteps;
-
-  //     x[0] = cx[0] + radius * cos((angle * 71) / 4068);
-  //     y[0] = cy[0] - radius * sin((angle * 71) / 4068);
-  //     inverseKinematics(0, y[0], x[0]);
-
-  //     x[3] = cx[3] + radius * cos((angle * 71) / 4068);
-  //     y[3] = cy[3] - radius * sin((angle * 71) / 4068);
-  //     inverseKinematics(3, y[3], x[3]);
-
-  //     //leg drift
-  //     x[1] -= lDStep;
-  //     inverseKinematics(1, y[1], x[1]);
-  //     x[2] -= lDStep;
-  //     inverseKinematics(2, y[2], x[2]);
-
-  //   delay(150);
-  // }
   
 }
 
