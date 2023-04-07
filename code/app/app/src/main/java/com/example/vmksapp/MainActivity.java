@@ -27,13 +27,13 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if(ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.BLUETOOTH_SCAN)
-                != PackageManager.PERMISSION_GRANTED)
-        {
-            ActivityCompat.requestPermissions(MainActivity.this,
-                    Manifest.permission.BLUETOOTH_SCAN,
-                    requestCode);
-        }
+//        if(ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.BLUETOOTH_SCAN)
+//                != PackageManager.PERMISSION_GRANTED)
+//        {
+//            ActivityCompat.requestPermissions(MainActivity.this,
+//                    Manifest.permission.BLUETOOTH_SCAN,
+//                    requestCode);
+//        }
         System.out.println("test");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -87,6 +87,11 @@ public class MainActivity extends AppCompatActivity {
         createButtonListener(findViewById(R.id.button1), outputStream, 49);
         createButtonListener(findViewById(R.id.button2), outputStream, 50);
         createButtonListener(findViewById(R.id.button3), outputStream, 51);
+        createButtonListener(findViewById(R.id.button4), outputStream, 52);
+        createButtonListener(findViewById(R.id.button5), outputStream, 53);
+        createButtonListener(findViewById(R.id.button6), outputStream, 54);
+        createButtonListener(findViewById(R.id.button7), outputStream, 55);
+        createButtonListener(findViewById(R.id.button8), outputStream, 56);
     }
 
     public void createButtonListener(Button btn, OutputStream outputStream, int moronicMessage) {
@@ -106,14 +111,14 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void checkPermission(String permission, int requestCode)
-    {
-        // Checking if permission is not granted
-        if (ContextCompat.checkSelfPermission(MainActivity.this, permission) == PackageManager.PERMISSION_DENIED) {
-            ActivityCompat.requestPermissions(MainActivity.this, new String[] { permission }, requestCode);
-        }
-        else {
-            Toast.makeText(MainActivity.this, "Permission already granted", Toast.LENGTH_SHORT).show();
-        }
-    }
+//    public void checkPermission(String permission, int requestCode)
+//    {
+//        // Checking if permission is not granted
+//        if (ContextCompat.checkSelfPermission(MainActivity.this, permission) == PackageManager.PERMISSION_DENIED) {
+//            ActivityCompat.requestPermissions(MainActivity.this, new String[] { permission }, requestCode);
+//        }
+//        else {
+//            Toast.makeText(MainActivity.this, "Permission already granted", Toast.LENGTH_SHORT).show();
+//        }
+//    }
 }

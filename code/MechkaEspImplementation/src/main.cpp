@@ -1,3 +1,5 @@
+#include <Arduino.h>
+
 #include "BluetoothSerial.h"
 
 //#define USE_PIN // Uncomment this to use PIN during pairing. The pin is specified on the line below
@@ -71,23 +73,6 @@ void loop()
       {
         Serial.write("Four");
       }
-    else if (receivedValueBT == '5')
-      {
-        Serial.write("Five");
-      }
-    else if (receivedValueBT == '6')
-      {
-        Serial.write("Six");
-      }
-    else if (receivedValueBT == '7')
-      {
-        Serial.write("Seven");
-      }
-    else if (receivedValueBT == '8')
-      {
-        Serial.write("Eight");
-      }
-
   }
   delay(20);
 }
