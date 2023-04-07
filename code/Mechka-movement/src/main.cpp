@@ -54,15 +54,44 @@ void loop() {
   
   standUp(5);
 
-  pitchTestMovement();
+  // pitchTestMovement();
 
-  xTestMovement();
+  // xTestMovement();
 
   walk(50);
+  // standUp(5);
+  y[0] = 5;
+  x[0] = 0;
+  y[1] = 5;
+  x[1] = 0;
+  y[2] = 5;
+  x[2] = 0;
+  y[3] = 5;
+  x[3] = 0;
+  inverseKinematics(0, y[0], x[0]);
+  inverseKinematics(1, y[1], x[1]);
+  inverseKinematics(2, y[2], x[2]);
+  inverseKinematics(3, y[3], x[3]);
+  delay(150);
+
   walk(50);
+  
+  y[0] = 5;
+  x[0] = 0;
+  y[1] = 5;
+  x[1] = 0;
+  y[2] = 5;
+  x[2] = 0;
+  y[3] = 5;
+  x[3] = 0;
+  inverseKinematics(0, y[0], x[0]);
+  inverseKinematics(1, y[1], x[1]);
+  inverseKinematics(2, y[2], x[2]);
+  inverseKinematics(3, y[3], x[3]);
+  delay(150);
+  
   walk(50);
-  walk(50);
-  walk(50);
+  // walk(50);
   delay(1000);
 
   standDown();
@@ -84,8 +113,12 @@ void walk(int speed){
   //legs drift step
   double lDStep = (4 * radius) / (angle / archSteps);
 
-  //launch forward
-  // xMovement(- radius);
+  //pitch 
+  y[2] -= 0.5;
+  y[3] -= 0.5;
+  inverseKinematics(2, y[2], x[2]);
+  inverseKinematics(3, y[3], x[3]);
+  delay(speed);
   
   double cx[4] = {x[0] + radius, x[1] + radius, x[2] + radius, x[3] + radius};
   double cy[4] = {y[0], y[1], y[2], y[3]};
@@ -101,16 +134,21 @@ void walk(int speed){
     y[2] = cy[2] - radius * sin((angle * 71) / 4068);
     inverseKinematics(2, y[2], x[2]);
 
+    //leg drift
+    x[0] -= lDStep/2;
     inverseKinematics(0, y[0], x[0]);
+    x[3] -= lDStep/2;
     inverseKinematics(3, y[3], x[3]);
 
     delay(speed);
   }
 
-  
   // reset the angle
   angle = 180;
-
+  double bx[4] = {x[0] + radius, x[1] + radius, x[2] + radius, x[3] + radius};
+  double by[4] = {y[0], y[1], y[2], y[3]};
+  memcpy(cx, bx, sizeof(cx));
+  memcpy(cy, by, sizeof(cy));
   y[1] = height;
   y[2] = height;
   
@@ -134,26 +172,34 @@ void walk(int speed){
     delay(speed);
   }
   
-  // reset variables
-  angle = 180;
-  double bx[4] = {x[0] + radius, x[1] + radius, x[2] + radius, x[3] + radius};
-  double by[4] = {y[0], y[1], y[2], y[3]};
-  memcpy(cx, bx, sizeof(cx));
-  memcpy(cy, by, sizeof(cy));
-  y[0] = height;
-  y[3] = height;
+  // // reset variables
+  // angle = 180;
+  // double ax[4] = {x[0] + radius, x[1] + radius, x[2] + radius, x[3] + radius};
+  // double ay[4] = {y[0], y[1], y[2], y[3]};
+  // memcpy(cx, ax, sizeof(cx));
+  // memcpy(cy, ay, sizeof(cy));
+  // y[0] = height;
+  // y[3] = height;
 
-  while(angle > 0){
-    angle -= 180/archSteps*2;
+  // while(angle > 90){
+  //   angle -= 180/archSteps;
 
-      //leg drift
-      x[0] -= lDStep;
-      inverseKinematics(0, y[0], x[0]);
-      x[3] -= lDStep;
-      inverseKinematics(3, y[3], x[3]);
+  //   x[1] = cx[1] + radius * cos((angle * 71) / 4068);
+  //   y[1] = cy[1] - radius * sin((angle * 71) / 4068);
+  //   inverseKinematics(1, y[1], x[1]);
 
-    delay(150);
-  }
+  //   x[2] = cx[2] + radius * cos((angle * 71) / 4068);
+  //   y[2] = cy[2] - radius * sin((angle * 71) / 4068);
+  //   inverseKinematics(2, y[2], x[2]);
+
+  //   //leg drift
+  //   x[0] -= lDStep;
+  //   inverseKinematics(0, y[0], x[0]);
+  //   x[3] -= lDStep;
+  //   inverseKinematics(3, y[3], x[3]);
+
+  //   delay(150);
+  // }
   
   
 }
