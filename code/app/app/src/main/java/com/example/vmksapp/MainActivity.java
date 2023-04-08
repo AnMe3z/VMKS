@@ -92,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
         createButtonListener(findViewById(R.id.button6), outputStream, 54);
         createButtonListener(findViewById(R.id.button7), outputStream, 55);
         createButtonListener(findViewById(R.id.button8), outputStream, 56);
+        createButtonListener(findViewById(R.id.button8), outputStream, 57);
     }
 
     public void createButtonListener(Button btn, OutputStream outputStream, int message) {
