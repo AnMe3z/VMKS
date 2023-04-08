@@ -87,6 +87,10 @@ void loop()
       {
         Serial.write("Eight");
       }
+    else if (receivedValueBT == '9')
+      {
+        Serial.write("Nine");
+      }
 
   }
   delay(20);

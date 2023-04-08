@@ -1,5 +1,6 @@
 package com.example.vmksapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -22,18 +23,19 @@ import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
 
+    private int PERMISSION_CODE = 1;
     static final UUID mUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
     @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//        if(ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.BLUETOOTH_SCAN)
-//                != PackageManager.PERMISSION_GRANTED)
-//        {
-//            ActivityCompat.requestPermissions(MainActivity.this,
-//                    Manifest.permission.BLUETOOTH_SCAN,
-//                    requestCode);
-//        }
+        if (ContextCompat.checkSelfPermission(MainActivity.this,
+                        Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(MainActivity.this, "You have already granted the needed permission!",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    requestBTPermission();
+                }
         System.out.println("test");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -92,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         createButtonListener(findViewById(R.id.button6), outputStream, 54);
         createButtonListener(findViewById(R.id.button7), outputStream, 55);
         createButtonListener(findViewById(R.id.button8), outputStream, 56);
-        createButtonListener(findViewById(R.id.button8), outputStream, 57);
+        createButtonListener(findViewById(R.id.button9), outputStream, 57);
     }
 
     public void createButtonListener(Button btn, OutputStream outputStream, int message) {
@@ -112,14 +114,19 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-//    public void checkPermission(String permission, int requestCode)
-//    {
-//        // Checking if permission is not granted
-//        if (ContextCompat.checkSelfPermission(MainActivity.this, permission) == PackageManager.PERMISSION_DENIED) {
-//            ActivityCompat.requestPermissions(MainActivity.this, new String[] { permission }, requestCode);
-//        }
-//        else {
-//            Toast.makeText(MainActivity.this, "Permission already granted", Toast.LENGTH_SHORT).show();
-//        }
-//    }
+    private void requestBTPermission() {
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_ADVERTISE, Manifest.permission.BLUETOOTH_CONNECT}, PERMISSION_CODE);
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Permission GRANTED", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Permission DENIED", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 }
