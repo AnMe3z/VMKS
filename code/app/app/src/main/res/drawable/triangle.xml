@@ -8,7 +8,6 @@
             android:pivotY="86%" >
             <shape
                 android:shape="rectangle" >
-                <stroke android:color="@color/red" android:width="10dp"/>
                 <solid
                     android:color="@color/red" />
             </shape>
