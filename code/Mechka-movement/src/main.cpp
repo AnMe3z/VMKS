@@ -54,42 +54,45 @@ void loop() {
   
   standUp(5);
 
-  // walk(50);
-  // y[0] = 5;
-  // x[0] = 0;
-  // y[1] = 5;
-  // x[1] = 0;
-  // y[2] = 5;
-  // x[2] = 0;
-  // y[3] = 5;
-  // x[3] = 0;
-  // inverseKinematics(0, y[0], x[0]);
-  // inverseKinematics(1, y[1], x[1]);
-  // inverseKinematics(2, y[2], x[2]);
-  // inverseKinematics(3, y[3], x[3]);
-  // delay(150);
+  walk(50);
 
-  // walk(50);
+  y[0] = 5;
+  x[0] = 0;
+  y[1] = 5;
+  x[1] = 0;
+  y[2] = 5;
+  x[2] = 0;
+  y[3] = 5;
+  x[3] = 0;
+  inverseKinematics(0, y[0], x[0]);
+  inverseKinematics(1, y[1], x[1]);
+  inverseKinematics(2, y[2], x[2]);
+  inverseKinematics(3, y[3], x[3]);
+  delay(500);
 
-  // y[0] = 5;
-  // x[0] = 0;
-  // y[1] = 5;
-  // x[1] = 0;
-  // y[2] = 5;
-  // x[2] = 0;
-  // y[3] = 5;
-  // x[3] = 0;
-  // inverseKinematics(0, y[0], x[0]);
-  // inverseKinematics(1, y[1], x[1]);
-  // inverseKinematics(2, y[2], x[2]);
-  // inverseKinematics(3, y[3], x[3]);
-  // delay(150);
+  walk(50);
+
+  y[0] = 5;
+  x[0] = 0;
+  y[1] = 5;
+  x[1] = 0;
+  y[2] = 5;
+  x[2] = 0;
+  y[3] = 5;
+  x[3] = 0;
+  inverseKinematics(0, y[0], x[0]);
+  inverseKinematics(1, y[1], x[1]);
+  inverseKinematics(2, y[2], x[2]);
+  inverseKinematics(3, y[3], x[3]);
+  delay(150);
   
-  // walk(50);
-  
-  // delay(1000);
+  walk(50);
 
-  // standDown();
+  
+  
+  delay(1000);
+
+  standDown();
   
 }
 
@@ -98,24 +101,24 @@ void loop() {
 void walk(int speed){
   int archSteps = 10;
   double angle = 180;
-  double radius = 1.0;
+  double radius = 1;
 
   //legs upward drift
-  // int count = 0;
-  // bool rising = true;
-  // double lUDStep = (radius) / (angle/archSteps);
+  int count = 0;
+  bool rising = true;
+  double lUDStep = radius/2;
 
   //legs drift step
-  double lDStep = (4 * radius) / (angle / archSteps);
+  double lDStep = (2 * radius) / (angle / archSteps);
 
   //pitch 
-  y[2] -= 0.5;
-  y[3] -= 0.5;
-  inverseKinematics(2, y[2], x[2]);
-  inverseKinematics(3, y[3], x[3]);
-  delay(speed);
+  // y[2] -= 1;
+  // y[3] -= 1;
+  // inverseKinematics(2, y[2], x[2]);
+  // inverseKinematics(3, y[3], x[3]);
+  // delay(speed);
   
-  double cx[4] = {x[0] + radius, x[1] + radius, x[2] + radius, x[3] + radius};
+  double cx[4] = {x[0] + radius/2, x[1] + radius/2, x[2] + radius/2, x[3] + radius/2};
   double cy[4] = {y[0], y[1], y[2], y[3]};
 
   while(angle > 0){
@@ -130,6 +133,22 @@ void walk(int speed){
     inverseKinematics(2, y[2], x[2]);
 
     //leg drift
+    if(count < 6 && rising){
+      count++;
+      if(count == 6){
+        rising = false;
+      }
+    }
+
+    if(rising){
+      y[0] += lUDStep;
+      y[3] += lUDStep;
+    }
+    else{
+      y[0] -= lUDStep;
+      y[3] -= lUDStep;
+    }
+
     x[0] -= lDStep/2;
     inverseKinematics(0, y[0], x[0]);
     x[3] -= lDStep/2;
@@ -140,61 +159,94 @@ void walk(int speed){
 
   // reset the angle
   angle = 180;
+  count = 0;
+  rising = true;
+  y[1] = height;
+  y[2] = height;
   double bx[4] = {x[0] + radius, x[1] + radius, x[2] + radius, x[3] + radius};
   double by[4] = {y[0], y[1], y[2], y[3]};
   memcpy(cx, bx, sizeof(cx));
   memcpy(cy, by, sizeof(cy));
-  y[1] = height;
-  y[2] = height;
   
-  while(angle > 0){ // loops 18 times
-      angle -= 180/archSteps;
+  while(angle > 0){ // loops 10 times
+    angle -= 180/archSteps;
 
-      x[0] = cx[0] + radius * cos((angle * 71) / 4068);
-      y[0] = cy[0] - radius * sin((angle * 71) / 4068);
-      inverseKinematics(0, y[0], x[0]);
+    x[0] = cx[0] + radius * cos((angle * 71) / 4068);
+    y[0] = cy[0] - (radius * 1.4) * sin((angle * 71) / 4068);
+    inverseKinematics(0, y[0], x[0]);
 
-      x[3] = cx[3] + radius * cos((angle * 71) / 4068);
-      y[3] = cy[3] - radius * sin((angle * 71) / 4068);
-      inverseKinematics(3, y[3], x[3]);
+    x[3] = cx[3] + radius * cos((angle * 71) / 4068);
+    y[3] = cy[3] - (radius * 1.4) * sin((angle * 71) / 4068);
+    inverseKinematics(3, y[3], x[3]);
 
-      //leg drift
-      x[1] -= lDStep;
-      inverseKinematics(1, y[1], x[1]);
-      x[2] -= lDStep;
-      inverseKinematics(2, y[2], x[2]);
+    //leg drift
+    if(count < 6 && rising){
+      count++;
+      if(count == 6){
+        rising = false;
+      }
+    }
+
+    if(rising){
+      y[1] += lUDStep;
+      y[2] += lUDStep;
+    }
+    else{
+      y[1] -= lUDStep;
+      y[2] -= lUDStep;
+    }
+
+    x[1] -= lDStep;
+    inverseKinematics(1, y[1], x[1]);
+    x[2] -= lDStep;
+    inverseKinematics(2, y[2], x[2]);
 
     delay(speed);
   }
   
   // // reset variables
-  // angle = 180;
-  // double ax[4] = {x[0] + radius, x[1] + radius, x[2] + radius, x[3] + radius};
-  // double ay[4] = {y[0], y[1], y[2], y[3]};
-  // memcpy(cx, ax, sizeof(cx));
-  // memcpy(cy, ay, sizeof(cy));
-  // y[0] = height;
-  // y[3] = height;
+  angle = 180;
+  y[0] = height;
+  y[3] = height;
+  double ax[4] = {x[0] + radius/2, x[1] + radius/2, x[2] + radius/2, x[3] + radius/2};
+  double ay[4] = {y[0], y[1], y[2], y[3]};
+  memcpy(cx, ax, sizeof(cx));
+  memcpy(cy, ay, sizeof(cy));
 
-  // while(angle > 90){
-  //   angle -= 180/archSteps;
+  while(angle > 180){
+    angle -= 180/archSteps;
 
-  //   x[1] = cx[1] + radius * cos((angle * 71) / 4068);
-  //   y[1] = cy[1] - radius * sin((angle * 71) / 4068);
-  //   inverseKinematics(1, y[1], x[1]);
+    x[1] = cx[1] + radius * cos((angle * 71) / 4068);
+    y[1] = cy[1] - radius * sin((angle * 71) / 4068);
+    inverseKinematics(1, y[1], x[1]);
 
-  //   x[2] = cx[2] + radius * cos((angle * 71) / 4068);
-  //   y[2] = cy[2] - radius * sin((angle * 71) / 4068);
-  //   inverseKinematics(2, y[2], x[2]);
+    x[2] = cx[2] + radius * cos((angle * 71) / 4068);
+    y[2] = cy[2] - radius * sin((angle * 71) / 4068);
+    inverseKinematics(2, y[2], x[2]);
 
-  //   //leg drift
-  //   x[0] -= lDStep;
-  //   inverseKinematics(0, y[0], x[0]);
-  //   x[3] -= lDStep;
-  //   inverseKinematics(3, y[3], x[3]);
 
-  //   delay(150);
-  // }
+    //leg drift
+    if(count < 6 && rising){
+      count++;
+      if(count == 6){
+        rising = false;
+      }
+    }
+
+    if(rising){
+      y[0] += lUDStep;
+      y[3] += lUDStep;
+    }
+    else{
+      y[0] -= lUDStep;
+      y[3] -= lUDStep;
+    }
+
+    inverseKinematics(0, y[0], x[0]);
+    inverseKinematics(3, y[3], x[3]);
+
+    delay(150);
+  }
   
   
 }
