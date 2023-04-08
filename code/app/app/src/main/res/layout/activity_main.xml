@@ -11,6 +11,7 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:background="@drawable/triangle"
+        style="@style/Widget.AppCompat.Button.Borderless"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -26,6 +27,7 @@
         android:rotation="270"
         android:backgroundTint="@color/red"
         android:layout_marginTop="8dp"
+        style="@style/Widget.AppCompat.Button.Borderless"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.2"
         app:layout_constraintStart_toStartOf="parent"
@@ -39,6 +41,7 @@
         android:rotation="90"
         android:layout_marginTop="8dp"
         android:backgroundTint="@color/red"
+        style="@style/Widget.AppCompat.Button.Borderless"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.8"
         app:layout_constraintStart_toStartOf="parent"
@@ -51,6 +54,7 @@
         android:background="@drawable/triangle"
         android:backgroundTint="@color/red"
         android:rotation="180"
+        style="@style/Widget.AppCompat.Button.Borderless"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -69,7 +73,7 @@
         app:layout_constraintHorizontal_bias="1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.2" />
+        app:layout_constraintVertical_bias="0.3" />
 
     <Button
         android:id="@+id/button6"
@@ -82,7 +86,7 @@
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@+id/button1"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.2" />
+        app:layout_constraintVertical_bias="0.3" />
 
     <Button
         android:id="@+id/button7"

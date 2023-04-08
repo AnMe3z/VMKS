@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         if (ContextCompat.checkSelfPermission(MainActivity.this,
                         Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(MainActivity.this, "You have already granted the needed permission!",
+                    Toast.makeText(MainActivity.this, "You have already granted permission!",
                             Toast.LENGTH_SHORT).show();
                 } else {
                     requestBTPermission();
@@ -109,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
                     throw new RuntimeException(e);
                 }
             }
-
 
         });
     }
