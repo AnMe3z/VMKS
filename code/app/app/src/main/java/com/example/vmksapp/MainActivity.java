@@ -44,14 +44,14 @@ public class MainActivity extends AppCompatActivity {
         BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
         System.out.println(btAdapter.getBondedDevices());
 //
-        BluetoothDevice esp32 = btAdapter.getRemoteDevice("78:21:84:E0:B8:CA");
-        System.out.println(esp32.getName());
+        BluetoothDevice hc = btAdapter.getRemoteDevice("98:DA:50:01:83:F3");
+        System.out.println(hc.getName());
 //
         BluetoothSocket btSocket = null;
         int counter = 0;
         do {
             try {
-                btSocket = esp32.createRfcommSocketToServiceRecord(mUUID);
+                btSocket = hc.createRfcommSocketToServiceRecord(mUUID);
                 System.out.println(btSocket);
                 btSocket.connect();
                 System.out.println(btSocket.isConnected());

@@ -1,6 +1,5 @@
 #include "BluetoothSerial.h"
 
-
 #include <Wire.h>
 
 #include <Adafruit_PWMServoDriver.h>
