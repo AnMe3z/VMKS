@@ -1,15 +1,20 @@
-#include "BluetoothSerial.h"
+#include<HCPCA9685.h>
+#include<SoftwareSerial.h>
 
-#include <Wire.h>
+//must have:
+// - array with min and max values
+// - inverse kinematics
 
-#include <Adafruit_PWMServoDriver.h>
+#define  I2CAdd 0x40
+HCPCA9685 HCPCA9685(I2CAdd);
 
-// called this way, it uses the default address 0x40
-Adafruit_PWMServoDriver board1 = Adafruit_PWMServoDriver(0x40);
+char receivedValueBT;
 
-#define SERVOMIN  125 // this is the 'minimum' pulse length count (out of 4096)
-#define SERVOMAX  575 // this is the 'maximum' pulse length count (out of 4096)
+/* Create object named bt of the class SoftwareSerial */ 
+SoftwareSerial bt(10,11); /* (Rx,Tx) */	
 
+//int servoRoms[12][12] = {{72, 180}, {22, 170}, {0, 0}, {10, 140}, {0, 180}, {0, 0}, {0, 70}, {35, 70}, {0, 0}, {10, 60}, {35, 140}, {0, 0}};
+//                      c             c           c            c           c           c           c             c
 int servoRoms[4][6] = {{40, 180, 90, 150, 35, 0}, {3, 120, 85, 135, 75, 0}, {0, 115, 90, 150, 85, 0}, {0, 115, 100, 160, 90, 0}};
 //the legs need to be closed at the start of the program for the angles to be true
 int servoCurrentAngles[4][3] = {{40, 170, 0}, {3, 156, 0}, {0, 150, 0}, {0, 180, 0}};
@@ -37,69 +42,36 @@ void pitchTestMovement();
 void inverseKinematics(int legIndex, double torsoHeight, double x);
 double cosineTheorem(int a, int b, double c);
 
-//#define USE_PIN // Uncomment this to use PIN during pairing. The pin is specified on the line below
-const char *pin = "1234"; // Change this to more secure PIN.
+void setup() {
+  //init the servo driver
+  HCPCA9685.Init(SERVO_MODE);
+  HCPCA9685.Sleep(false);
+  bt.begin(9600);	/* Define baud rate for software serial communication */
+  Serial.begin(9600);	/* Define baud rate for serial communication */
 
-String device_name = "ESP32-BT-Slave";
-char receivedValue; //debugging
-char receivedValueBT;
+  //what i want:
+  // - when the program starts move the body to lowered position
+  // - stand up
 
-#if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
-#error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
-#endif
-
-#if !defined(CONFIG_BT_SPP_ENABLED)
-#error Serial Bluetooth not available or not enabled. It is only available for the ESP32 chip.
-#endif
-
-BluetoothSerial SerialBT;
-
-void setup() 
-{
-  //driver initialization
-  board1.begin(); 
-  board1.setPWMFreq(60);  // Analog servos run at ~60 Hz updates
-  Serial.begin(115200);
-  SerialBT.begin("ESP32test"); //Bluetooth device name
-  Serial.printf("The device with name \"%s\" is started.\nNow you can pair it with Bluetooth!\n", device_name.c_str());
-  //Serial.printf("The device with name \"%s\" and MAC address %s is started.\nNow you can pair it with Bluetooth!\n", device_name.c_str(), SerialBT.getMacString()); // Use this after the MAC method is implemented
-  #ifdef USE_PIN
-    SerialBT.setPin(pin);
-    Serial.println("Using PIN");
-  #endif
+  //make the robot to sit down (be humble)
+  standUp(5);
+  standDown();
+  standUp(5);
+  
+  // init pause
+  delay(750);
 }
 
-void loop() 
-{
-  // if (Serial.available()) 
-  // {
-  //   receivedValue = Serial.read();
-  //   if (receivedValue == '1')
-  //     {
-  //       Serial.write("One");
-  //     }
-  //   else if (receivedValue == '2')
-  //     {
-  //       Serial.write("Two");
-  //     }
-  //   else if (receivedValue == '3')
-  //     {
-  //       Serial.write("Three");
-  //     }
-  //   else if (receivedValue == '4')
-  //     {
-  //       Serial.write("Four");
-  //     }
-  // }
-  //debug purposes
-  
-  standUp(5);
-  if (SerialBT.available()) 
+void loop() {
+
+
+ if (bt.available()) 
   {
-    receivedValueBT = SerialBT.read();
+    receivedValueBT = bt.read();
     if (receivedValueBT == '1')
       {
         Serial.write("One");
+        walk(50);
       }
     else if (receivedValueBT == '2')
       {
@@ -112,6 +84,7 @@ void loop()
     else if (receivedValueBT == '4')
       {
         Serial.write("Four");
+        walkReverse(50);
       }
     else if (receivedValueBT == '5')
       {
@@ -126,10 +99,12 @@ void loop()
     else if (receivedValueBT == '7')
       {
         Serial.write("Seven");
+        xTestMovement();
       }
     else if (receivedValueBT == '8')
       {
         Serial.write("Eight");
+        pitchTestMovement();
       }
     else if (receivedValueBT == '9')
       {
@@ -137,7 +112,165 @@ void loop()
       }
 
   }
-  delay(20);
+  //walkReverse(50);
+
+  // y[0] = 5;
+  // x[0] = 0;
+  // y[1] = 5;
+  // x[1] = 0;
+  // y[2] = 5;
+  // x[2] = 0;
+  // y[3] = 5;
+  // x[3] = 0;
+  // inverseKinematics(0, y[0], x[0]);
+  // inverseKinematics(1, y[1], x[1]);
+  // inverseKinematics(2, y[2], x[2]);
+  // inverseKinematics(3, y[3], x[3]);
+  // delay(500);
+
+  //walk(50);
+
+  // walkTrust(50);
+
+  // y[0] = 5;0
+  // x[0] = 0;
+  // y[1] = 5;
+  // x[1] = 0;
+  // y[2] = 5;
+  // x[2] = 0;
+  // y[3] = 5;
+  // x[3] = 0;
+  // inverseKinematics(0, y[0], x[0]);
+  // inverseKinematics(1, y[1], x[1]);
+  // inverseKinematics(2, y[2], x[2]);
+  // inverseKinematics(3, y[3], x[3]);
+  // delay(150);
+  
+  // walk(50);
+
+  
+  // y[0] = 5;
+  // x[0] = 0;
+  // y[1] = 5;
+  // x[1] = 0;
+  // y[2] = 5;
+  // x[2] = 0;
+  // y[3] = 5;
+  // x[3] = 0;
+  // inverseKinematics(0, y[0], x[0]);
+  // inverseKinematics(1, y[1], x[1]);
+  // inverseKinematics(2, y[2], x[2]);
+  // inverseKinematics(3, y[3], x[3]);
+  // delay(150);
+  
+  // walkTrust(50);
+
+  
+  // y[0] = 5;
+  // x[0] = 0;
+  // y[1] = 5;
+  // x[1] = 0;
+  // y[2] = 5;
+  // x[2] = 0;
+  // y[3] = 5;
+  // x[3] = 0;
+  // inverseKinematics(0, y[0], x[0]);
+  // inverseKinematics(1, y[1], x[1]);
+  // inverseKinematics(2, y[2], x[2]);
+  // inverseKinematics(3, y[3], x[3]);
+  // delay(150);
+  
+  // walk(50);
+
+  
+  // y[0] = 5;
+  // x[0] = 0;
+  // y[1] = 5;
+  // x[1] = 0;
+  // y[2] = 5;
+  // x[2] = 0;
+  // y[3] = 5;
+  // x[3] = 0;
+  // inverseKinematics(0, y[0], x[0]);
+  // inverseKinematics(1, y[1], x[1]);
+  // inverseKinematics(2, y[2], x[2]);
+  // inverseKinematics(3, y[3], x[3]);
+  // delay(150);
+  
+  // walkTrust(50);
+
+  
+  // y[0] = 5;
+  // x[0] = 0;
+  // y[1] = 5;
+  // x[1] = 0;
+  // y[2] = 5;
+  // x[2] = 0;
+  // y[3] = 5;
+  // x[3] = 0;
+  // inverseKinematics(0, y[0], x[0]);
+  // inverseKinematics(1, y[1], x[1]);
+  // inverseKinematics(2, y[2], x[2]);
+  // inverseKinematics(3, y[3], x[3]);
+  // delay(150);
+  
+  // walk(50);
+
+  
+  // y[0] = 5;
+  // x[0] = 0;
+  // y[1] = 5;
+  // x[1] = 0;
+  // y[2] = 5;
+  // x[2] = 0;
+  // y[3] = 5;
+  // x[3] = 0;
+  // inverseKinematics(0, y[0], x[0]);
+  // inverseKinematics(1, y[1], x[1]);
+  // inverseKinematics(2, y[2], x[2]);
+  // inverseKinematics(3, y[3], x[3]);
+  // delay(150);
+  
+  // walkTrust(50);
+
+  
+  // y[0] = 5;
+  // x[0] = 0;
+  // y[1] = 5;
+  // x[1] = 0;
+  // y[2] = 5;
+  // x[2] = 0;
+  // y[3] = 5;
+  // x[3] = 0;
+  // inverseKinematics(0, y[0], x[0]);
+  // inverseKinematics(1, y[1], x[1]);
+  // inverseKinematics(2, y[2], x[2]);
+  // inverseKinematics(3, y[3], x[3]);
+  // delay(150);
+  
+  // walk(50);
+
+  
+  // y[0] = 5;
+  // x[0] = 0;
+  // y[1] = 5;
+  // x[1] = 0;
+  // y[2] = 5;
+  // x[2] = 0;
+  // y[3] = 5;
+  // x[3] = 0;
+  // inverseKinematics(0, y[0], x[0]);
+  // inverseKinematics(1, y[1], x[1]);
+  // inverseKinematics(2, y[2], x[2]);
+  // inverseKinematics(3, y[3], x[3]);
+  // delay(150);
+  
+  // walkTrust(50);
+  
+  delay(100);
+
+  //standDown();
+  
 }
 
 // --- complex movements
@@ -815,23 +948,18 @@ void inverseKinematics(int legIndex, double torsoHeight, double x){
   femurAngle += theta;
 
   //knee
-  board1.setPWM(kneeServoIndex, 0, angleToPulse(kneeMin + kneeAngle));
+  HCPCA9685.Servo(kneeServoIndex, map(kneeMin + kneeAngle, 0, 180, 1, 450));
   
   //femur
-  board1.setPWM(femurServoIndex, 0, angleToPulse(femurMax - femurAngle));
+  HCPCA9685.Servo(femurServoIndex, map(femurMax - femurAngle, 0, 180, 1, 450));
 
   //hip
   int hipServoIndex = leg[legIndex][2];
   //the value bellow is meant to be a temporary patch
   //TODO: to set default hip servo pos to 90 degrees
   int hipMiddleAngle = servoRoms[legIndex][4];
-  board1.setPWM(hipServoIndex, 0, angleToPulse(hipMiddleAngle));
+  HCPCA9685.Servo(hipServoIndex, map(hipMiddleAngle, 0, 180, 1, 450));
 
-}
-
-int angleToPulse(int ang){
-   int pulse = map(ang,0, 180, SERVOMIN,SERVOMAX);// map angle of 0 to 180 to Servo min and Servo max 
-   return pulse;
 }
 
 double cosineTheorem(int a, int b, double c){
@@ -842,4 +970,3 @@ double cosineTheorem(int a, int b, double c){
     return acos((b * b + a * a - c * c)/(2.0 * b * a)) * 57296 / 1000;
   }
 }
-
