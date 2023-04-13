@@ -36,7 +36,7 @@ MECHKA е четирикрак робот създаден от екип Budget 
 
 ## Презентация
 
-[Презентация](https://docs.google.com/presentation/d/1ao5GaoYlJ3WwoU5Bq-MMPqkvP_JQxsr8S0_cT7X9GHs/edit#slide=id.g22d9616c669_1_0)
+[Презентация](https://docs.google.com/presentation/d/1ao5GaoYlJ3WwoU5Bq-MMPqkvP_JQxsr8S0_cT7X9GHs/edit#slide=id.g20fd7a13fe7_0_95)
 
 
 ## Demo
