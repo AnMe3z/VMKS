@@ -18,7 +18,8 @@ MECHKA е четирикрак модуларен робот създаден о
 - Специални функции
 
 
-## 3Д Модел на тялото
+
+## 3D Модел на тялото
 
 ![Screenshot1](render.png)
 
@@ -32,7 +33,7 @@ MECHKA е четирикрак модуларен робот създаден о
 [Документация](https://docs.google.com/document/d/1ljFhPLfK0vJMqwFt7CCxIXQy4T2rVfxQFEeq_DpqxoI/edit)
 
 
-## Автори
+## Budget Dynamics
 
 - [@Андрей Ежков](https://www.github.com/AnMe3z)
 - [@Викторио Миланов](https://www.github.com/bigIq)
