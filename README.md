@@ -38,7 +38,7 @@ MECHKA е четирикрак робот създаден от екип Budget 
 
 ## Електрическа схема
 
-![Screenshot1](VMKS-Electrical-Scheme.png)
+![Screenshot1](ElectricalScheme.png)
 
 ## 3D Модел на тялото
 
