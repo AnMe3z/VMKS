@@ -1,7 +1,6 @@
 #include<HCPCA9685.h>
 #include<SoftwareSerial.h>
 
-
 #define  I2CAdd 0x40
 HCPCA9685 HCPCA9685(I2CAdd);
 
@@ -47,10 +46,11 @@ void setup() {
   Serial.begin(9600); /* Define baud rate for serial communication */
 
   standDown();
-  standUp(5);
+  // standUp(5);
 
   // init pause
   delay(750);
+  
 }
 
 void loop() {
@@ -100,7 +100,8 @@ void loop() {
         Serial.write("Nine");
       }
   }
-
+ else{
+ }
   delay(100);
 
 }
