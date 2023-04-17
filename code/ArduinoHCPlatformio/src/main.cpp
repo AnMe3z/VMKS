@@ -21,6 +21,7 @@ int legLenght = 10;
 double x[4] = {0 ,0, 0, 0};
 double height = 1;
 double y[4] = {0 ,0, 0, 0};
+double z[4] = {0, 0, 0, 0};
 
 //all functions predeclaration
 // complex movements
@@ -36,6 +37,7 @@ void hold();
 void xTestMovement();
 void pitchTestMovement();
 // essential movements
+void inverseKinematicsZTest(int legIndex, double torsoHeight, double x);
 void inverseKinematics(int legIndex, double torsoHeight, double x);
 double cosineTheorem(int a, int b, double c);
 
@@ -55,60 +57,212 @@ void setup() {
 }
 
 void loop() {
- if (bt.available()) 
-  {
-    receivedValueBT = bt.read();
-    if (receivedValueBT == '1') // walk
-      {
-        Serial.write("One");
-        walk(50);
-      }
-    else if (receivedValueBT == '2') // left
-      {
-        Serial.write("Two");
-        
-      }
-    else if (receivedValueBT == '3') // right
-      {
-        Serial.write("Three");
-      }
-    else if (receivedValueBT == '4') // reverse
-      {
-        Serial.write("Four");
-        walkReverse(50);
-      }
-    else if (receivedValueBT == '5') // standUp
-      {
-        Serial.write("Five");
-        standUp(5);
-      }
-    else if (receivedValueBT == '6') // standDown
-      {
-        Serial.write("Six");
-        standDown();
-      }
-    else if (receivedValueBT == '7') // xTest
-      {
-        Serial.write("Seven");
-        xTestMovement();
-      }
-    else if (receivedValueBT == '8') // pitchTest
-      {
-        Serial.write("Eight");
-        pitchTestMovement();
-      }
-    else if (receivedValueBT == '9')
-      {
-        Serial.write("Nine");
-      }
-  }
- else{
- }
-  delay(100);
+  standUp(5);
+  delay(1000);
+  sideStep();
+  delay(1000);
+  standDown();
+  delay(3000);
+
+//  if (bt.available()) 
+//   {
+//     receivedValueBT = bt.read();
+//     if (receivedValueBT == '1') // walk
+//       {
+//         Serial.write("One");
+//         walk(50);
+//       }
+//     else if (receivedValueBT == '2') // left
+//       {
+//         Serial.write("Two");
+//         sideStep();
+//       }
+//     else if (receivedValueBT == '3') // right
+//       {
+//         Serial.write("Three");
+//       }
+//     else if (receivedValueBT == '4') // reverse
+//       {
+//         Serial.write("Four");
+//         walkReverse(50);
+//       }
+//     else if (receivedValueBT == '5') // standUp
+//       {
+//         Serial.write("Five");
+//         standUp(5);
+//       }
+//     else if (receivedValueBT == '6') // standDown
+//       {
+//         Serial.write("Six");
+//         standDown();
+//       }
+//     else if (receivedValueBT == '7') // xTest
+//       {
+//         Serial.write("Seven");
+//         xTestMovement();
+//       }
+//     else if (receivedValueBT == '8') // pitchTest
+//       {
+//         Serial.write("Eight");
+//         pitchTestMovement();
+//       }
+//     else if (receivedValueBT == '9')
+//       {
+//         Serial.write("Nine");
+//       }
+//   }
+//  else{
+//  }
+//   delay(100);
 
 }
 
 // --- complex movements
+
+void sideStep(){
+  
+  int archSteps = 10;
+  double angle = 180;
+  double radius = 0.5;
+
+  //legs upward drift
+  int count = 0;
+  bool rising = true;
+  double lUDStep = radius/2;
+
+  //legs drift step
+  double lDStep = (2 * radius) / (angle / archSteps);
+
+  double cz[4] = {z[0] + radius/2, z[1] + radius/2, z[2] + radius/2, z[3] + radius/2};
+  double cy[4] = {y[0], y[1], y[2], y[3]};
+
+  while(angle > 0){
+    angle -= 180/archSteps;
+
+    z[1] = cz[1] + radius * cos((angle * 71) / 4068);
+    y[1] = cy[1] - radius * sin((angle * 71) / 4068);
+    inverseKinematicsZTest(1, y[1], z[1]);
+
+    z[2] = cz[2] + radius * cos((angle * 71) / 4068);
+    y[2] = cy[2] - radius * sin((angle * 71) / 4068);
+    inverseKinematicsZTest(2, y[2], z[2]);
+
+    //leg drift
+    if(count < 6 && rising){
+      count++;
+      if(count == 6){
+        rising = false;
+      }
+    }
+
+    if(rising){
+      y[0] += lUDStep*0.75;
+      y[3] += lUDStep*0.75;
+    }
+    else{
+      y[0] -= lUDStep*0.75;
+      y[3] -= lUDStep*0.75;
+    }
+
+    z[0] -= lDStep/2;
+    inverseKinematicsZTest(0, y[0], z[0]);
+    z[3] -= lDStep/2;
+    inverseKinematicsZTest(3, y[3], z[3]);
+
+    delay(50);
+  }
+
+  // reset the angle
+  angle = 180;
+  count = 0;
+  rising = true;
+  y[1] = height;
+  y[2] = height;
+  double bz[4] = {z[0] + radius, z[1] + radius, z[2] + radius, z[3] + radius};
+  double by[4] = {y[0], y[1], y[2], y[3]};
+  memcpy(cz, bz, sizeof(cz));
+  memcpy(cy, by, sizeof(cy));
+
+  while(angle > 0){ // loops 10 times
+    angle -= 180/archSteps;
+
+    z[0] = cz[0] + radius * cos((angle * 71) / 4068);
+    y[0] = cy[0] - (radius * 1.4) * sin((angle * 71) / 4068);
+    inverseKinematicsZTest(0, y[0], z[0]);
+
+    z[3] = cz[3] + radius * cos((angle * 71) / 4068);
+    y[3] = cy[3] - (radius * 1.4) * sin((angle * 71) / 4068);
+    inverseKinematicsZTest(3, y[3], z[3]);
+
+    //leg drift
+    if(count < 6 && rising){
+      count++;
+      if(count == 6){
+        rising = false;
+      }
+    }
+
+    if(rising){
+      y[1] += lUDStep;
+      y[2] += lUDStep;
+    }
+    else{
+      y[1] -= lUDStep;
+      y[2] -= lUDStep;
+    }
+
+    z[1] -= lDStep;
+    inverseKinematicsZTest(1, y[1], z[1]);
+    z[2] -= lDStep;
+    inverseKinematicsZTest(2, y[2], z[2]);
+
+    delay(50);
+  }
+
+  // // reset variables
+  angle = 180;
+  y[0] = height;
+  y[3] = height;
+  double az[4] = {z[0] + radius/2, z[1] + radius/2, z[2] + radius/2, z[3] + radius/2};
+  double ay[4] = {y[0], y[1], y[2], y[3]};
+  memcpy(cz, az, sizeof(cz));
+  memcpy(cy, ay, sizeof(cy));
+
+  while(angle > 180){
+    angle -= 180/archSteps;
+
+    z[1] = cz[1] + radius * cos((angle * 71) / 4068);
+    y[1] = cy[1] - radius * sin((angle * 71) / 4068);
+    inverseKinematicsZTest(1, y[1], z[1]);
+
+    z[2] = cz[2] + radius * cos((angle * 71) / 4068);
+    y[2] = cy[2] - radius * sin((angle * 71) / 4068);
+    inverseKinematicsZTest(2, y[2], z[2]);
+
+
+    //leg drift
+    if(count < 6 && rising){
+      count++;
+      if(count == 6){
+        rising = false;
+      }
+    }
+
+    if(rising){
+      y[0] += lUDStep*0.75;
+      y[3] += lUDStep*0.75;
+    }
+    else{
+      y[0] -= lUDStep*0.75;
+      y[3] -= lUDStep*0.75;
+    }
+
+    inverseKinematicsZTest(0, y[0], z[0]);
+    inverseKinematicsZTest(3, y[3], z[3]);
+
+    delay(50);
+  }
+}
 
 void walk(int speed){
   int archSteps = 10;
@@ -250,7 +404,7 @@ void walk(int speed){
     inverseKinematics(0, y[0], x[0]);
     inverseKinematics(3, y[3], x[3]);
 
-    delay(150);
+    delay(speed);
   }
 }
 
@@ -751,6 +905,44 @@ void pitchTestMovement(){
 }
 
 // --- essensials
+
+void inverseKinematicsZTest(int legIndex, double torsoHeight, double z){
+
+  double theta = atan( tan( z / torsoHeight ) ) * 57296 / 1000;
+  double cNew = sqrt(torsoHeight*torsoHeight + z*z);
+
+  if(cNew < 0){
+    cNew *= -1;
+  }
+
+  int a = legLenght;
+  int b = a;
+  double c = cNew;
+
+  int kneeServoIndex = leg[legIndex][0];
+  int kneeMin = servoRoms[legIndex][0];
+  int kneeAngle = cosineTheorem(a, b, c);
+
+  int femurServoIndex = leg[legIndex][1];
+  int femurMax = servoRoms[legIndex][3];
+  int femurAngle = 90 - cosineTheorem(a, c, b);
+  
+  int hipServoIndex = leg[legIndex][2];
+  //the value bellow is meant to be a temporary patch
+  //TODO: to set default hip servo pos to 90 degrees
+  int hipMiddleAngle = servoRoms[legIndex][4];
+  hipMiddleAngle += theta;
+
+  //knee
+  HCPCA9685.Servo(kneeServoIndex, map(kneeMin + kneeAngle, 0, 180, 1, 450));
+
+  //femur
+  HCPCA9685.Servo(femurServoIndex, map(femurMax - femurAngle, 0, 180, 1, 450));
+
+  //hip
+  HCPCA9685.Servo(hipServoIndex, map(hipMiddleAngle, 0, 180, 1, 450));
+
+}
 
 void inverseKinematics(int legIndex, double torsoHeight, double x){
 
