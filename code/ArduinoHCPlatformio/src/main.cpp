@@ -24,6 +24,7 @@ double y[4] = {0 ,0, 0, 0};
 
 //all functions predeclaration
 // complex movements
+void sideStep();
 void walk(int speed);
 void walkTrust(int speed);
 void walkReverse(int speed);
