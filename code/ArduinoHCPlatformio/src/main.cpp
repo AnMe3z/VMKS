@@ -65,6 +65,7 @@ void loop() {
     else if (receivedValueBT == '2') // left
       {
         Serial.write("Two");
+        
       }
     else if (receivedValueBT == '3') // right
       {
