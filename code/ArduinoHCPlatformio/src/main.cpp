@@ -25,6 +25,7 @@ double z[4] = {0, 0, 0, 0};
 
 //all functions predeclaration
 // complex movements
+void workout(int reps);
 void sideStep();
 void walk(int speed);
 void walkTrust(int speed);
@@ -118,6 +119,28 @@ void loop() {
 }
 
 // --- complex movements
+
+void workout(int reps){
+  int targetHeight = 5;
+  double servoStep = 0.25;
+  int delayTime = 50;
+
+  standDown();
+
+  //push up movement
+  for (int i = 0; i <= reps; i++) {
+    // pushing up
+    while(height < targetHeight){ // assume all y's are equal
+      y[0] += servoStep;
+      y[1] += servoStep;
+      inverseKinematics(0, y[0], 0);
+      inverseKinematics(1, y[1], 0);
+      delay(delayTime);
+    }
+    //standing down
+    standDown();
+  }
+}
 
 void sideStep(){
   
