@@ -11,7 +11,7 @@ SoftwareSerial bt(10,11); /* (Rx,Tx) */
 
 //int servoRoms[12][12] = {{72, 180}, {22, 170}, {0, 0}, {10, 140}, {0, 180}, {0, 0}, {0, 70}, {35, 70}, {0, 0}, {10, 60}, {35, 140}, {0, 0}};
 //                      c             c           c            c           c           c           c             c
-int servoRoms[4][6] = {{40, 180, 90, 150, 35, 0}, {3, 120, 85, 135, 75, 0}, {0, 115, 90, 150, 85, 0}, {0, 115, 100, 160, 90, 0}};
+int servoRoms[4][6] = {{40, 180, 90, 180, 35, 0}, {3, 120, 85, 150, 75, 0}, {0, 135, 90, 162, 85, 0}, {0, 125, 90, 165, 90, 0}};
 //the legs need to be closed at the start of the program for the angles to be true
 int servoCurrentAngles[4][3] = {{40, 170, 0}, {3, 156, 0}, {0, 150, 0}, {0, 180, 0}};
 int leg[4][3] = {{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}};
@@ -58,63 +58,79 @@ void setup() {
 }
 
 void loop() {
-  standUp(5);
-  delay(1000);
-  sideStep();
-  delay(1000);
-  standDown();
-  delay(3000);
 
-//  if (bt.available()) 
-//   {
-//     receivedValueBT = bt.read();
-//     if (receivedValueBT == '1') // walk
-//       {
-//         Serial.write("One");
-//         walk(50);
-//       }
-//     else if (receivedValueBT == '2') // left
-//       {
-//         Serial.write("Two");
-//         sideStep();
-//       }
-//     else if (receivedValueBT == '3') // right
-//       {
-//         Serial.write("Three");
-//       }
-//     else if (receivedValueBT == '4') // reverse
-//       {
-//         Serial.write("Four");
-//         walkReverse(50);
-//       }
-//     else if (receivedValueBT == '5') // standUp
-//       {
-//         Serial.write("Five");
-//         standUp(5);
-//       }
-//     else if (receivedValueBT == '6') // standDown
-//       {
-//         Serial.write("Six");
-//         standDown();
-//       }
-//     else if (receivedValueBT == '7') // xTest
-//       {
-//         Serial.write("Seven");
-//         xTestMovement();
-//       }
-//     else if (receivedValueBT == '8') // pitchTest
-//       {
-//         Serial.write("Eight");
-//         pitchTestMovement();
-//       }
-//     else if (receivedValueBT == '9')
-//       {
-//         Serial.write("Nine");
-//       }
-//   }
-//  else{
-//  }
-//   delay(100);
+  // standUp(3);
+  // delay(1000);
+  // standUp(5);
+  // delay(1000);
+  // standUp(7);
+  // delay(1000);
+  // standDown();
+  // delay(1000);
+
+  // HCPCA9685.Servo(1, map(180, 0, 180, 10, 450));
+  // HCPCA9685.Servo(4, map(150, 0, 180, 10, 450));
+  // HCPCA9685.Servo(7, map(162, 0, 180, 10, 450));
+  // HCPCA9685.Servo(10, map(165, 0, 180, 10, 450));
+  // delay(2000);
+
+  // HCPCA9685.Servo(10, map(90, 0, 180, 10, 450));
+  // delay(2000);
+  // // HCPCA9685.Servo(10, map(160, 0, 180, 10, 450));
+  // // delay(2000);
+  // HCPCA9685.Servo(10, map(165, 0, 180, 10, 450));
+  // delay(2000);
+
+ if (bt.available()) 
+  {
+    receivedValueBT = bt.read();
+    if (receivedValueBT == '1') // walk
+      {
+        Serial.write("One");
+        walk(50);
+      }
+    else if (receivedValueBT == '2') // left
+      {
+        Serial.write("Two");
+        sideStep();
+      }
+    else if (receivedValueBT == '3') // right
+      {
+        Serial.write("Three");
+      }
+    else if (receivedValueBT == '4') // reverse
+      {
+        Serial.write("Four");
+        walkReverse(50);
+      }
+    else if (receivedValueBT == '5') // standUp
+      {
+        Serial.write("Five");
+        standUp(5);
+      }
+    else if (receivedValueBT == '6') // standDown
+      {
+        Serial.write("Six");
+        standDown();
+      }
+    else if (receivedValueBT == '7') // xTest
+      {
+        Serial.write("Seven");
+        xTestMovement();
+      }
+    else if (receivedValueBT == '8') // pitchTest
+      {
+        Serial.write("Eight");
+        pitchTestMovement();
+      }
+    else if (receivedValueBT == '9')
+      {
+        Serial.write("Nine");
+      }
+  }
+ else{
+ }
+  delay(100);
 
 }
 
@@ -957,13 +973,13 @@ void inverseKinematicsZTest(int legIndex, double torsoHeight, double z){
   hipMiddleAngle += theta;
 
   //knee
-  HCPCA9685.Servo(kneeServoIndex, map(kneeMin + kneeAngle, 0, 180, 1, 450));
+  HCPCA9685.Servo(kneeServoIndex, map(kneeMin + kneeAngle, 0, 180, 10, 450));
 
   //femur
-  HCPCA9685.Servo(femurServoIndex, map(femurMax - femurAngle, 0, 180, 1, 450));
+  HCPCA9685.Servo(femurServoIndex, map(femurMax - femurAngle, 0, 180, 10, 450));
 
   //hip
-  HCPCA9685.Servo(hipServoIndex, map(hipMiddleAngle, 0, 180, 1, 450));
+  HCPCA9685.Servo(hipServoIndex, map(hipMiddleAngle, 0, 180, 10, 450));
 
 }
 
