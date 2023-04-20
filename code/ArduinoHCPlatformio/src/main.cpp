@@ -10,8 +10,8 @@ char receivedValueBT;
 SoftwareSerial bt(10,11); /* (Rx,Tx) */  
 
 //int servoRoms[12][12] = {{72, 180}, {22, 170}, {0, 0}, {10, 140}, {0, 180}, {0, 0}, {0, 70}, {35, 70}, {0, 0}, {10, 60}, {35, 140}, {0, 0}};
-//                      c             c           c            c           c           c           c             c
-int servoRoms[4][6] = {{40, 180, 90, 180, 35, 0}, {3, 120, 85, 150, 75, 0}, {0, 135, 90, 162, 85, 0}, {0, 125, 90, 165, 90, 0}};
+//                      c             c           c             c            c            c            c            c
+int servoRoms[4][6] = {{40, 180, 90, 160, 35, 0}, {3, 120, 85, 150, 75, 0}, {0, 135, 90, 153, 85, 0}, {0, 125, 90, 150, 90, 0}};
 //the legs need to be closed at the start of the program for the angles to be true
 int servoCurrentAngles[4][3] = {{40, 170, 0}, {3, 156, 0}, {0, 150, 0}, {0, 180, 0}};
 int leg[4][3] = {{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}};
@@ -25,6 +25,7 @@ double z[4] = {0, 0, 0, 0};
 
 //all functions predeclaration
 // complex movements
+void rotateRight(int speed);
 void workout(int reps);
 void sideStep();
 void walk(int speed);
@@ -88,6 +89,9 @@ void loop() {
       {
         Serial.write("One");
         walk(50);
+        //experimental
+        delay(100);
+        standUp(5);
       }
     else if (receivedValueBT == '2') // left
       {
@@ -97,6 +101,7 @@ void loop() {
     else if (receivedValueBT == '3') // right
       {
         Serial.write("Three");
+        rotateRight(50);
       }
     else if (receivedValueBT == '4') // reverse
       {
@@ -135,6 +140,157 @@ void loop() {
 }
 
 // --- complex movements
+
+void rotateRight(int speed){
+
+  int archSteps = 10;
+  double angle = 180;
+  double radius = 1;
+
+  //legs upward drift
+  int count = 0;
+  bool rising = true;
+  double lUDStep = radius/2;
+
+  //legs drift step
+  double lDStep = (2 * radius) / (angle / archSteps);
+
+  double cx[4] = {x[0] + radius/2, x[1] + radius/2, x[2] + radius/2, x[3] + radius/2};
+  double cy[4] = {y[0], y[1], y[2], y[3]};
+
+  //leg lift towards rotating direction
+  double targetLift = 3;
+  double liftStep = targetLift/archSteps;
+
+  while(angle > 0){
+    angle -= 180/archSteps;
+
+    x[1] = cx[1] + radius * cos((angle * 71) / 4068);
+    y[1] = cy[1] - radius * sin((angle * 71) / 4068);
+    inverseKinematics(1, y[1], x[1]);
+
+    //lift rotation direction leg
+    y[2] += liftStep;
+    inverseKinematics(2, y[2], x[2]);
+
+    //leg drift
+    if(count < 6 && rising){
+      count++;
+      if(count == 6){
+        rising = false;
+      }
+    }
+
+    if(rising){
+      y[0] += lUDStep*0.75;
+      y[3] += lUDStep*0.75;
+    }
+    else{
+      y[0] -= lUDStep*0.75;
+      y[3] -= lUDStep*0.75;
+    }
+
+    x[0] -= lDStep/2;
+    inverseKinematics(0, y[0], x[0]);
+    x[3] -= lDStep/2;
+    inverseKinematics(3, y[3], x[3]);
+
+    delay(speed);
+  }
+
+  // reset the angle
+  angle = 180;
+  count = 0;
+  rising = true;
+  y[1] = height;
+  // y[2] = height;
+  double bx[4] = {x[0] + radius, x[1] + radius, x[2] + radius, x[3] + radius};
+  double by[4] = {y[0], y[1], y[2], y[3]};
+  memcpy(cx, bx, sizeof(cx));
+  memcpy(cy, by, sizeof(cy));
+
+  while(angle > 0){ // loops 10 times
+    angle -= 180/archSteps;
+
+    x[0] = cx[0] + radius * cos((angle * 71) / 4068);
+    y[0] = cy[0] - (radius * 1.4) * sin((angle * 71) / 4068);
+    inverseKinematics(0, y[0], x[0]);
+
+    x[3] = cx[3] + radius * cos((angle * 71) / 4068);
+    y[3] = cy[3] - (radius * 1.4) * sin((angle * 71) / 4068);
+    inverseKinematics(3, y[3], x[3]);
+
+    //leg drift
+    if(count < 6 && rising){
+      count++;
+      if(count == 6){
+        rising = false;
+      }
+    }
+
+    if(rising){
+      y[1] += lUDStep;
+      // y[2] += lUDStep;
+    }
+    else{
+      y[1] -= lUDStep;
+      // y[2] -= lUDStep;
+    }
+
+    x[1] -= lDStep;
+    inverseKinematics(1, y[1], x[1]);
+    // x[2] -= lDStep;
+    // inverseKinematics(2, y[2], x[2]);
+
+    delay(speed);
+  }
+
+  // // reset variables
+  angle = 180;
+  y[0] = height;
+  y[3] = height;
+  double ax[4] = {x[0] + radius/2, x[1] + radius/2, x[2] + radius/2, x[3] + radius/2};
+  double ay[4] = {y[0], y[1], y[2], y[3]};
+  memcpy(cx, ax, sizeof(cx));
+  memcpy(cy, ay, sizeof(cy));
+
+  while(angle > 180){
+    angle -= 180/archSteps;
+
+    x[1] = cx[1] + radius * cos((angle * 71) / 4068);
+    y[1] = cy[1] - radius * sin((angle * 71) / 4068);
+    inverseKinematics(1, y[1], x[1]);
+
+    //land rotation direction leg
+    y[2] -= liftStep;
+    inverseKinematics(2, y[2], x[2]);
+
+    //leg drift
+    if(count < 6 && rising){
+      count++;
+      if(count == 6){
+        rising = false;
+      }
+    }
+
+    if(rising){
+      y[0] += lUDStep*0.75;
+      y[3] += lUDStep*0.75;
+    }
+    else{
+      y[0] -= lUDStep*0.75;
+      y[3] -= lUDStep*0.75;
+    }
+
+    inverseKinematics(0, y[0], x[0]);
+    inverseKinematics(3, y[3], x[3]);
+
+    delay(speed);
+  }
+  
+  //experimental
+  // height = 0;
+}
 
 void workout(int reps){
   int targetHeight = 5;
@@ -304,6 +460,7 @@ void sideStep(){
 }
 
 void walk(int speed){
+
   int archSteps = 10;
   double angle = 180;
   double radius = 1;
@@ -445,6 +602,9 @@ void walk(int speed){
 
     delay(speed);
   }
+  
+  //experimental
+  height = 4.90;
 }
 
 void walkTrust(int speed){
@@ -984,6 +1144,10 @@ void inverseKinematicsZTest(int legIndex, double torsoHeight, double z){
 }
 
 void inverseKinematics(int legIndex, double torsoHeight, double x){
+  //hardcode leg 2#
+  if(legIndex == 2){
+    torsoHeight += 0.5;
+  }
 
   double theta = atan( tan( x / torsoHeight ) ) * 57296 / 1000;
   double cNew = sqrt(torsoHeight*torsoHeight + x*x);
