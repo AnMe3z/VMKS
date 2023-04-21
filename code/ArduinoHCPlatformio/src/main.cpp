@@ -102,9 +102,24 @@ void loop() {
         Serial.write("Eight");
         pitchTestMovement();
       }
-    else if (receivedValueBT == '9')
+    else if (receivedValueBT == '9') // 180 degrees - work in progress
       {
         Serial.write("Nine");
+        pitchTestMovement();
+      }
+    else if (receivedValueBT == '10') // SidestepLEFT
+      {
+        Serial.write("Ten");
+        pitchTestMovement();
+      }
+    else if (receivedValueBT == '11') // SidestepRIGHT
+      {
+        Serial.write("Eleven");
+        pitchTestMovement();
+      }
+    else if (receivedValueBT == '12') //pushups
+      {
+        Serial.write("Twelve");
         workout(5);
       }
   }
