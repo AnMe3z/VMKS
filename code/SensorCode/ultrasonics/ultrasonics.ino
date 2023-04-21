@@ -1,28 +1,24 @@
+#include "NewPing.h"
 
-// defines pins numbers
-const int trigPin = 3;
-const int echoPin = 2;
-// defines variables
-long duration;
-int distance;
+#define TRIGGER_PIN 9
+#define ECHO_PIN 10
+#define TRIGGER_PIN2 5
+#define ECHO_PIN2 6
+
+#define MAX_DISTANCE 400  
+
+NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
+NewPing sonar2(TRIGGER_PIN2, ECHO_PIN2, MAX_DISTANCE);
+
 void setup() {
-  pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
-  pinMode(echoPin, INPUT); // Sets the echoPin as an Input
-  Serial.begin(9600); // Starts the serial communication
+  Serial.begin(9600);
 }
+
 void loop() {
-  // Clears the trigPin
-  digitalWrite(trigPin, LOW);
-  delayMicroseconds(2);
-  // Sets the trigPin on HIGH state for 10 micro seconds
-  digitalWrite(trigPin, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trigPin, LOW);
-  // Reads the echoPin, returns the sound wave travel time in microseconds
-  duration = pulseIn(echoPin, HIGH);
-  // Calculating the distance
-  distance = duration * 0.034 / 2;
-  // Prints the distance on the Serial Monitor
-  Serial.print("Distance: ");
-  Serial.println(distance);
+  Serial.print("Distance = ");
+  Serial.print(sonar.ping_cm());
+  Serial.println(" cm");
+  Serial.print("Distance2 = ");
+  Serial.print(sonar2.ping_cm());
+  Serial.println(" cm");
 }
