@@ -82,8 +82,8 @@
 
     <Button
         android:id="@+id/button5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
         android:text="STAND UP"
         android:background="@drawable/outline_button"
         app:layout_constraintBottom_toTopOf="@+id/button1"
@@ -95,8 +95,8 @@
 
     <Button
         android:id="@+id/button6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
         android:background="@drawable/outline_button"
         android:text="SIT DOWN"
         app:layout_constraintBottom_toTopOf="@+id/button1"
@@ -108,8 +108,8 @@
 
     <Button
         android:id="@+id/button7"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
         android:text="XTEST"
         android:background="@drawable/outline_button"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -121,8 +121,8 @@
 
     <Button
         android:id="@+id/button12"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
         android:background="@drawable/outline_button"
         android:text="PUSHUP"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -134,8 +134,8 @@
 
     <Button
         android:id="@+id/button8"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
         android:layout_marginBottom="4dp"
         android:text="PITCH"
         android:background="@drawable/outline_button"
