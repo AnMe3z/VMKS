@@ -103,9 +103,9 @@ public class MainActivity extends AppCompatActivity {
         createButtonListener(findViewById(R.id.button7), outputStream, 55);
         createButtonListener(findViewById(R.id.button8), outputStream, 56);
         createButtonListener(findViewById(R.id.button9), outputStream, 57);
-        createButtonListener(findViewById(R.id.button10), outputStream, 58);
-        createButtonListener(findViewById(R.id.button11), outputStream, 59);
-        createButtonListener(findViewById(R.id.button12), outputStream, 60);
+        createButtonListener(findViewById(R.id.button10), outputStream, 65);
+        createButtonListener(findViewById(R.id.button11), outputStream, 66);
+        createButtonListener(findViewById(R.id.button12), outputStream, 67);
     }
 
     public void createButtonListener(Button btn, OutputStream outputStream, int message) {

@@ -107,19 +107,19 @@ void loop() {
         Serial.write("Nine");
         pitchTestMovement();
       }
-    else if (receivedValueBT == '10') // SidestepLEFT
+    else if (receivedValueBT == 'A') // SidestepLEFT
       {
-        Serial.write("Ten");
+        Serial.write("Ten - A");
         pitchTestMovement();
       }
-    else if (receivedValueBT == '11') // SidestepRIGHT
+    else if (receivedValueBT == 'B') // SidestepRIGHT
       {
-        Serial.write("Eleven");
+        Serial.write("Eleven - B");
         pitchTestMovement();
       }
-    else if (receivedValueBT == '12') //pushups
+    else if (receivedValueBT == 'C') //pushups
       {
-        Serial.write("Twelve");
+        Serial.write("Twelve - C");
         workout(5);
       }
   }
