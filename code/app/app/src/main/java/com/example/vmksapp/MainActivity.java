@@ -10,9 +10,11 @@ import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -29,6 +31,9 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         if (ContextCompat.checkSelfPermission(MainActivity.this,
                         Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(MainActivity.this, "You have already granted permission!",
@@ -96,6 +101,9 @@ public class MainActivity extends AppCompatActivity {
         createButtonListener(findViewById(R.id.button7), outputStream, 55);
         createButtonListener(findViewById(R.id.button8), outputStream, 56);
         createButtonListener(findViewById(R.id.button9), outputStream, 57);
+        createButtonListener(findViewById(R.id.button10), outputStream, 58);
+        createButtonListener(findViewById(R.id.button11), outputStream, 59);
+        createButtonListener(findViewById(R.id.button12), outputStream, 60);
     }
 
     public void createButtonListener(Button btn, OutputStream outputStream, int message) {
