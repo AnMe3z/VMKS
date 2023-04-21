@@ -25,6 +25,7 @@ double z[4] = {0, 0, 0, 0};
 
 //all functions predeclaration
 // complex movements
+void rotateRight(int speed);
 void workout(int reps);
 void sideStep();
 void walk(int speed);
@@ -74,6 +75,7 @@ void loop() {
     else if (receivedValueBT == '3') // right
       {
         Serial.write("Three");
+        rotateRight(50);
       }
     else if (receivedValueBT == '4') // reverse
       {
@@ -103,6 +105,7 @@ void loop() {
     else if (receivedValueBT == '9')
       {
         Serial.write("Nine");
+        workout(5);
       }
   }
  else{
@@ -113,25 +116,188 @@ void loop() {
 
 // --- complex movements
 
+void rotateRight(int speed){
+
+  int archSteps = 10;
+  double angle = 180;
+  double radius = 1;
+
+  //legs upward drift
+  int count = 0;
+  bool rising = true;
+  double lUDStep = radius/2;
+
+  //legs drift step
+  double lDStep = (2 * radius) / (angle / archSteps);
+
+  double cx[4] = {x[0] + radius/2, x[1] + radius/2, x[2] + radius/2, x[3] + radius/2};
+  double cy[4] = {y[0], y[1], y[2], y[3]};
+
+  //leg lift towards rotating direction
+  double targetLift = 3;
+  double liftStep = targetLift/archSteps;
+
+  while(angle > 0){
+    angle -= 180/archSteps;
+
+    x[1] = cx[1] + radius * cos((angle * 71) / 4068);
+    y[1] = cy[1] - radius * sin((angle * 71) / 4068);
+    inverseKinematics(1, y[1], x[1]);
+
+    //lift rotation direction leg
+    y[2] += liftStep;
+    inverseKinematics(2, y[2], x[2]);
+
+    //leg drift
+    if(count < 6 && rising){
+      count++;
+      if(count == 6){
+        rising = false;
+      }
+    }
+
+    if(rising){
+      y[0] += lUDStep*0.75;
+      y[3] += lUDStep*0.75;
+    }
+    else{
+      y[0] -= lUDStep*0.75;
+      y[3] -= lUDStep*0.75;
+    }
+
+    x[0] -= lDStep/2;
+    inverseKinematics(0, y[0], x[0]);
+    x[3] -= lDStep/2;
+    inverseKinematics(3, y[3], x[3]);
+
+    delay(speed);
+  }
+
+  // reset the angle
+  angle = 180;
+  count = 0;
+  rising = true;
+  y[1] = height;
+  // y[2] = height;
+  double bx[4] = {x[0] + radius, x[1] + radius, x[2] + radius, x[3] + radius};
+  double by[4] = {y[0], y[1], y[2], y[3]};
+  memcpy(cx, bx, sizeof(cx));
+  memcpy(cy, by, sizeof(cy));
+
+  while(angle > 0){ // loops 10 times
+    angle -= 180/archSteps;
+
+    x[0] = cx[0] + radius * cos((angle * 71) / 4068);
+    y[0] = cy[0] - (radius * 1.4) * sin((angle * 71) / 4068);
+    inverseKinematics(0, y[0], x[0]);
+
+    x[3] = cx[3] + radius * cos((angle * 71) / 4068);
+    y[3] = cy[3] - (radius * 1.4) * sin((angle * 71) / 4068);
+    inverseKinematics(3, y[3], x[3]);
+
+    //leg drift
+    if(count < 6 && rising){
+      count++;
+      if(count == 6){
+        rising = false;
+      }
+    }
+
+    if(rising){
+      y[1] += lUDStep;
+      // y[2] += lUDStep;
+    }
+    else{
+      y[1] -= lUDStep;
+      // y[2] -= lUDStep;
+    }
+
+    x[1] -= lDStep;
+    inverseKinematics(1, y[1], x[1]);
+    // x[2] -= lDStep;
+    // inverseKinematics(2, y[2], x[2]);
+
+    delay(speed);
+  }
+
+  // // reset variables
+  angle = 180;
+  y[0] = height;
+  y[3] = height;
+  double ax[4] = {x[0] + radius/2, x[1] + radius/2, x[2] + radius/2, x[3] + radius/2};
+  double ay[4] = {y[0], y[1], y[2], y[3]};
+  memcpy(cx, ax, sizeof(cx));
+  memcpy(cy, ay, sizeof(cy));
+
+  while(angle > 180){
+    angle -= 180/archSteps;
+
+    x[1] = cx[1] + radius * cos((angle * 71) / 4068);
+    y[1] = cy[1] - radius * sin((angle * 71) / 4068);
+    inverseKinematics(1, y[1], x[1]);
+
+    //land rotation direction leg
+    y[2] -= liftStep;
+    inverseKinematics(2, y[2], x[2]);
+
+    //leg drift
+    if(count < 6 && rising){
+      count++;
+      if(count == 6){
+        rising = false;
+      }
+    }
+
+    if(rising){
+      y[0] += lUDStep*0.75;
+      y[3] += lUDStep*0.75;
+    }
+    else{
+      y[0] -= lUDStep*0.75;
+      y[3] -= lUDStep*0.75;
+    }
+
+    inverseKinematics(0, y[0], x[0]);
+    inverseKinematics(3, y[3], x[3]);
+
+    delay(speed);
+  }
+  
+  //experimental
+  // height = 0;
+}
+
 void workout(int reps){
-  int targetHeight = 5;
+  double targetHeight = 7.0;
   double servoStep = 0.25;
   int delayTime = 50;
 
   standDown();
 
+  double pushupHeight = 0;
+
   //push up movement
   for (int i = 0; i <= reps; i++) {
     // pushing up
-    while(height < targetHeight){ // assume all y's are equal
-      y[0] += servoStep;
-      y[1] += servoStep;
-      inverseKinematics(0, y[0], 0);
-      inverseKinematics(1, y[1], 0);
+
+    while(pushupHeight <= targetHeight){ // assume all y's are equal
+      pushupHeight += servoStep;
+      y[2] += servoStep*1.25;
+      y[3] += servoStep;
+      inverseKinematics(2, y[2], 0);
+      inverseKinematics(3, y[3], 0);
       delay(delayTime);
     }
+
     //standing down
-    standDown();
+    while(pushupHeight > 0){// assume all y's are equal
+        pushupHeight -= servoStep;
+        y[2] -= servoStep*1.25;
+        y[3] -= servoStep;
+        inverseKinematics(2, y[2], 0);
+        inverseKinematics(3, y[3], 0);
+        delay(delayTime);
+      }
   }
 }
 
