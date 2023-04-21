@@ -11,7 +11,7 @@ SoftwareSerial bt(10,11); /* (Rx,Tx) */
 
 //int servoRoms[12][12] = {{72, 180}, {22, 170}, {0, 0}, {10, 140}, {0, 180}, {0, 0}, {0, 70}, {35, 70}, {0, 0}, {10, 60}, {35, 140}, {0, 0}};
 //                      c             c           c            c           c           c           c             c
-int servoRoms[4][6] = {{40, 180, 90, 150, 35, 0}, {3, 120, 85, 135, 75, 0}, {0, 115, 90, 150, 85, 0}, {0, 115, 100, 160, 90, 0}};
+int servoRoms[4][6] = {{40, 180, 90, 150, 35, 0}, {3, 120, 85, 135, 75, 0}, {0, 115, 90, 150, 85, 0}, {0, 125,  90, 150, 90, 0}};
 //the legs need to be closed at the start of the program for the angles to be true
 int servoCurrentAngles[4][3] = {{40, 170, 0}, {3, 156, 0}, {0, 150, 0}, {0, 180, 0}};
 int leg[4][3] = {{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}};
@@ -58,63 +58,56 @@ void setup() {
 }
 
 void loop() {
-  standUp(5);
-  delay(1000);
-  sideStep();
-  delay(1000);
-  standDown();
-  delay(3000);
-
-//  if (bt.available()) 
-//   {
-//     receivedValueBT = bt.read();
-//     if (receivedValueBT == '1') // walk
-//       {
-//         Serial.write("One");
-//         walk(50);
-//       }
-//     else if (receivedValueBT == '2') // left
-//       {
-//         Serial.write("Two");
-//         sideStep();
-//       }
-//     else if (receivedValueBT == '3') // right
-//       {
-//         Serial.write("Three");
-//       }
-//     else if (receivedValueBT == '4') // reverse
-//       {
-//         Serial.write("Four");
-//         walkReverse(50);
-//       }
-//     else if (receivedValueBT == '5') // standUp
-//       {
-//         Serial.write("Five");
-//         standUp(5);
-//       }
-//     else if (receivedValueBT == '6') // standDown
-//       {
-//         Serial.write("Six");
-//         standDown();
-//       }
-//     else if (receivedValueBT == '7') // xTest
-//       {
-//         Serial.write("Seven");
-//         xTestMovement();
-//       }
-//     else if (receivedValueBT == '8') // pitchTest
-//       {
-//         Serial.write("Eight");
-//         pitchTestMovement();
-//       }
-//     else if (receivedValueBT == '9')
-//       {
-//         Serial.write("Nine");
-//       }
-//   }
-//  else{
-//  }
-//   delay(100);
+ if (bt.available()) 
+  {
+    receivedValueBT = bt.read();
+    if (receivedValueBT == '1') // walk
+      {
+        Serial.write("One");
+        walk(50);
+      }
+    else if (receivedValueBT == '2') // left
+      {
+        Serial.write("Two");
+        sideStep();
+      }
+    else if (receivedValueBT == '3') // right
+      {
+        Serial.write("Three");
+      }
+    else if (receivedValueBT == '4') // reverse
+      {
+        Serial.write("Four");
+        walkReverse(50);
+      }
+    else if (receivedValueBT == '5') // standUp
+      {
+        Serial.write("Five");
+        standUp(5);
+      }
+    else if (receivedValueBT == '6') // standDown
+      {
+        Serial.write("Six");
+        standDown();
+      }
+    else if (receivedValueBT == '7') // xTest
+      {
+        Serial.write("Seven");
+        xTestMovement();
+      }
+    else if (receivedValueBT == '8') // pitchTest
+      {
+        Serial.write("Eight");
+        pitchTestMovement();
+      }
+    else if (receivedValueBT == '9')
+      {
+        Serial.write("Nine");
+      }
+  }
+ else{
+ }
+  delay(100);
 
 }
 
@@ -968,6 +961,11 @@ void inverseKinematicsZTest(int legIndex, double torsoHeight, double z){
 }
 
 void inverseKinematics(int legIndex, double torsoHeight, double x){
+  //
+  if(legIndex == 2){
+    if(height == 0){torsoHeight -= 1;}
+    else{torsoHeight += 1;}
+  }
 
   double theta = atan( tan( x / torsoHeight ) ) * 57296 / 1000;
   double cNew = sqrt(torsoHeight*torsoHeight + x*x);
