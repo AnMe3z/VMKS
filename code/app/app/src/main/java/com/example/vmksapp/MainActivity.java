@@ -50,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
         System.out.println(btAdapter.getBondedDevices());
 //
         BluetoothDevice hc = btAdapter.getRemoteDevice("98:DA:50:01:83:F3");
+        // wemos mac below
+//        BluetoothDevice hc = btAdapter.getRemoteDevice("BC:DD:C2:F4:87:09");
         System.out.println(hc.getName());
 //
         BluetoothSocket btSocket = null;
