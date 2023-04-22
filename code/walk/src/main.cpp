@@ -54,9 +54,18 @@ void loop() {
   // walk(50);
   // reset();
 
-  pitch(25);
-  
+  pitch(10);
+
   delay(1000);
+
+  walk(50);
+  reset();
+
+  delay(1000);
+  
+  pitch(-10);
+  
+  delay(10000);
 
 }
 
@@ -269,12 +278,17 @@ void pitch(double angle){
   double bodyLenght = 33.00;
   double radius = bodyLenght/2;
 
-  double pitchOffsetX = radius - cos(angle)*radius;
+  double pitchOffsetX = radius - cos((angle * 71) / 4068)*radius;
 
-  x[0] -= pitchOffsetX;
-  x[1] -= pitchOffsetX;
+  x[0] += pitchOffsetX;
+  x[1] += pitchOffsetX;
   x[2] -= pitchOffsetX;
   x[3] -= pitchOffsetX;
+
+  y[0] += pitchOffsetX;
+  y[1] += pitchOffsetX;
+  y[2] -= pitchOffsetX;
+  y[3] -= pitchOffsetX;
 
   inverseKinematics(0, y[0], x[0]);
   inverseKinematics(1, y[1], x[1]);
