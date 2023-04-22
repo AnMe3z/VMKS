@@ -9,7 +9,7 @@ HCPCA9685 HCPCA9685(I2CAdd);
 // --- legs
 //int servoRoms[12][12] = {{72, 180}, {22, 170}, {0, 0}, {10, 140}, {0, 180}, {0, 0}, {0, 70}, {35, 70}, {0, 0}, {10, 60}, {35, 140}, {0, 0}};
 //                      c             c           c            c           c           c           c             c
-int servoRoms[4][6] = {{40, 180, 90, 150, 35, 0}, {3, 120, 85, 135, 75, 0}, {0, 115, 90, 150, 85, 0}, {0, 125,  90, 150, 90, 0}};
+int servoRoms[4][6] = {{40, 180, 90, 150, 35, 0}, {3, 120, 85, 135, 75, 0}, {0, 115, 90, 150, 85, 0}, {0, 125,  90, 150, 80, 0}};
 //the legs need to be closed at the start of the program for the angles to be true
 int servoCurrentAngles[4][3] = {{40, 170, 0}, {3, 156, 0}, {0, 150, 0}, {0, 180, 0}};
 int leg[4][3] = {{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}};
@@ -22,23 +22,12 @@ double y[4] = {0 ,0, 0, 0};
 double z[4] = {0, 0, 0, 0};
 
 //all functions predeclaration
-//sensors
-bool checkDistance(); // returns true if there is NO obstacle
 // complex movements
-void rotateRight(int speed);
-void workout(int reps);
-void sideStep();
 void walk(int speed);
 void reset();
-void walkTrust(int speed);
-void walkReverse(int speed);
 // basic movements
 void standDown();
 void standUp(double targetHeight);
-void xMovement(double tX);
-void hold();
-void xTestMovement();
-void pitchTestMovement();
 // essential movements
 void inverseKinematicsZTest(int legIndex, double torsoHeight, double x);
 void inverseKinematics(int legIndex, double torsoHeight, double x);
@@ -52,7 +41,7 @@ void setup() {
   Serial.begin(9600); /* Define baud rate for serial communication */
 
   standDown();
-  // standUp(5);
+  standUp(5);
 
   // init pause
   delay(750);
@@ -60,9 +49,11 @@ void setup() {
 }
 
 void loop() {
-  if (!checkDistance()){
-    standUp(5);
-  }
+  
+  walk(50);
+  reset();
+  
+  delay(1000);
 
 }
 
@@ -429,44 +420,6 @@ void pitchTestMovement(){
 }
 
 // --- essensials
-
-void inverseKinematicsZTest(int legIndex, double torsoHeight, double z){
-
-  double theta = atan( tan( z / torsoHeight ) ) * 57296 / 1000;
-  double cNew = sqrt(torsoHeight*torsoHeight + z*z);
-
-  if(cNew < 0){
-    cNew *= -1;
-  }
-
-  int a = legLenght;
-  int b = a;
-  double c = cNew;
-
-  int kneeServoIndex = leg[legIndex][0];
-  int kneeMin = servoRoms[legIndex][0];
-  int kneeAngle = cosineTheorem(a, b, c);
-
-  int femurServoIndex = leg[legIndex][1];
-  int femurMax = servoRoms[legIndex][3];
-  int femurAngle = 90 - cosineTheorem(a, c, b);
-  
-  int hipServoIndex = leg[legIndex][2];
-  //the value bellow is meant to be a temporary patch
-  //TODO: to set default hip servo pos to 90 degrees
-  int hipMiddleAngle = servoRoms[legIndex][4];
-  hipMiddleAngle += theta;
-
-  //knee
-  HCPCA9685.Servo(kneeServoIndex, map(kneeMin + kneeAngle, 0, 180, 1, 450));
-
-  //femur
-  HCPCA9685.Servo(femurServoIndex, map(femurMax - femurAngle, 0, 180, 1, 450));
-
-  //hip
-  HCPCA9685.Servo(hipServoIndex, map(hipMiddleAngle, 0, 180, 1, 450));
-
-}
 
 void inverseKinematics(int legIndex, double torsoHeight, double x){
   //
