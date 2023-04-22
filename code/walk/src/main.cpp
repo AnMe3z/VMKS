@@ -88,8 +88,25 @@ void walk(int speed){
   //legs drift step
   double lDStep = (2 * radius) / (angle / archSteps);
 
+  //pitch
+  double pitch = 2;
+  y[0] += pitch;
+  y[1] += pitch;
+
+  //rear legs lean
+  double lean = 1;
+  x[0] -= lean;
+  x[1] -= lean;
+
+  inverseKinematics(0, y[0], x[0]);
+  inverseKinematics(1, y[1], x[1]);
+  inverseKinematics(2, y[2], x[2]);
+  inverseKinematics(3, y[3], x[3]);
+  delay(1000);
+
   double cx[4] = {x[0] + radius/2, x[1] + radius/2, x[2] + radius/2, x[3] + radius/2};
   double cy[4] = {y[0], y[1], y[2], y[3]};
+
 
   while(angle > 0){
     angle -= 180/archSteps;
@@ -253,168 +270,6 @@ void standDown(){
     inverseKinematics(1, y[1], 0);
     inverseKinematics(2, y[2], 0);
     inverseKinematics(3, y[3], 0);
-    delay(delayTime);
-  }
-}
-
-void xMovement(double tX){
-  double cX = x[0]; // current x
-  double servoStep = 0.25;
-  int delayTime = 50;
-
-  if(cX < tX){
-    while(x[0] < tX){
-      cX += servoStep;
-      x[0] += servoStep;
-      x[1] += servoStep;
-      x[2] += servoStep;
-      x[3] += servoStep;
-      inverseKinematics(0, y[0], x[0]);
-      inverseKinematics(1, y[1], x[1]);
-      inverseKinematics(2, y[2], x[2]);
-      inverseKinematics(3, y[3], x[3]);
-      delay(delayTime);
-    }
-  }
-  else{
-    while(cX > tX){
-      cX -= servoStep;
-      x[0] -= servoStep;
-      x[1] -= servoStep;
-      x[2] -= servoStep;
-      x[3] -= servoStep;
-      inverseKinematics(0, y[0], x[0]);
-      inverseKinematics(1, y[1], x[1]);
-      inverseKinematics(2, y[2], x[2]);
-      inverseKinematics(3, y[3], x[3]);
-      delay(delayTime);
-    }
-  }
-
-  delay(1000);
-}
-
-void hold(){
-  int delayTime = 50;
-
-  inverseKinematics(0, height, 0);
-  inverseKinematics(1, height, 0);
-  inverseKinematics(2, height, 0);
-  inverseKinematics(3, height, 0);
-
-  delay(delayTime);
-}
-
-void xTestMovement(){
-  double servoStep = 0.25;
-  int delayTime = 50;
-  double tX = x[0];
-
-  while(tX > -2){
-    tX -= servoStep;
-    x[0] -= servoStep;
-    x[1] -= servoStep;
-    x[2] -= servoStep;
-    x[3] -= servoStep;
-    inverseKinematics(0, y[0], x[0]);
-    inverseKinematics(1, y[1], x[1]);
-    inverseKinematics(2, y[2], x[2]);
-    inverseKinematics(3, y[3], x[3]);
-    delay(delayTime);
-  }
-
-  while(tX < 2){
-    tX += servoStep;
-    x[0] += servoStep;
-    x[1] += servoStep;
-    x[2] += servoStep;
-    x[3] += servoStep;
-    inverseKinematics(0, y[0], x[0]);
-    inverseKinematics(1, y[1], x[1]);
-    inverseKinematics(2, y[2], x[2]);
-    inverseKinematics(3, y[3], x[3]);
-    delay(delayTime);
-  }
-
-  while(tX > 0){
-    tX -= servoStep;
-    x[0] -= servoStep;
-    x[1] -= servoStep;
-    x[2] -= servoStep;
-    x[3] -= servoStep;
-    inverseKinematics(0, y[0], x[0]);
-    inverseKinematics(1, y[1], x[1]);
-    inverseKinematics(2, y[2], x[2]);
-    inverseKinematics(3, y[3], x[3]);
-    delay(delayTime);
-  }
-
-  delay(1000);
-}
-
-void pitchTestMovement(){
-  double servoStep = 0.25;
-  int delayTime = 50;
-  int i = 0;
-
-  while(i < 12){
-    i++;
-    y[0] += servoStep;
-    y[1] += servoStep*2;
-    y[2] += 0;
-    y[3] += servoStep;
-    inverseKinematics(0, y[0], x[0]);
-    inverseKinematics(1, y[1], x[1]);
-    inverseKinematics(2, y[2], x[2]);
-    inverseKinematics(3, y[3], x[3]);
-    delay(delayTime);
-  }
-  while(i > 0){
-    i--;
-    y[0] -= servoStep;
-    y[1] -= servoStep;
-    y[2] += servoStep;
-    y[3] += servoStep;
-    inverseKinematics(0, y[0], x[0]);
-    inverseKinematics(1, y[1], x[1]);
-    inverseKinematics(2, y[2], x[2]);
-    inverseKinematics(3, y[3], x[3]);
-    delay(delayTime);
-  }
-  while(i < 12){
-    i++;
-    y[0] += servoStep;
-    y[1] -= servoStep;
-    y[2] += servoStep;
-    y[3] -= servoStep;
-    inverseKinematics(0, y[0], x[0]);
-    inverseKinematics(1, y[1], x[1]);
-    inverseKinematics(2, y[2], x[2]);
-    inverseKinematics(3, y[3], x[3]);
-    delay(delayTime);
-  }
-  while(i > 0){
-    i--;
-    y[0] += servoStep;
-    y[1] += servoStep;
-    y[2] -= servoStep;
-    y[3] -= servoStep;
-    inverseKinematics(0, y[0], x[0]);
-    inverseKinematics(1, y[1], x[1]);
-    inverseKinematics(2, y[2], x[2]);
-    inverseKinematics(3, y[3], x[3]);
-    delay(delayTime);
-  }
-  while(i < 12){
-    i++;
-    y[0] -= servoStep*2;
-    y[1] -= servoStep;
-    y[2] -= servoStep;
-    y[3] += 0;
-    inverseKinematics(0, y[0], x[0]);
-    inverseKinematics(1, y[1], x[1]);
-    inverseKinematics(2, y[2], x[2]);
-    inverseKinematics(3, y[3], x[3]);
     delay(delayTime);
   }
 }
