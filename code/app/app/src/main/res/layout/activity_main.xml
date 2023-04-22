@@ -152,7 +152,7 @@
         android:layout_height="80dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/circlebutton"
-        android:text="180°"
+        android:text="STOP"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
