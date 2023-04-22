@@ -51,21 +51,9 @@ void setup() {
 
 void loop() {
   
-  // walk(50);
-  // reset();
-
-  pitch(10);
-
-  delay(1000);
-
   walk(50);
   reset();
-
-  delay(1000);
-  
-  pitch(-10);
-  
-  delay(10000);
+  delay(50);
 
 }
 
@@ -101,8 +89,8 @@ void walk(int speed){
   double lDStep = (2 * radius) / (angle / archSteps);
 
   //pitch
-  pitch(25);
-  delay(1000);
+  pitch(10);
+  delay(100);
 
   double cx[4] = {x[0] + radius/2, x[1] + radius/2, x[2] + radius/2, x[3] + radius/2};
   double cy[4] = {y[0], y[1], y[2], y[3]};
@@ -233,6 +221,10 @@ void walk(int speed){
 
     delay(speed);
   }
+  
+  //restore normal pitch
+  pitch(-10);
+  delay(100);
 }
 
 // --- basic movements
@@ -280,8 +272,8 @@ void pitch(double angle){
 
   double pitchOffsetX = radius - cos((angle * 71) / 4068)*radius;
 
-  x[0] += pitchOffsetX;
-  x[1] += pitchOffsetX;
+  x[0] -= pitchOffsetX;
+  x[1] -= pitchOffsetX;
   x[2] -= pitchOffsetX;
   x[3] -= pitchOffsetX;
 
