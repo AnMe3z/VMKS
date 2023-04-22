@@ -1,14 +1,29 @@
 #include<HCPCA9685.h>
 #include<SoftwareSerial.h>
+#include "NewPing.h"
 
+// --- servo driver
 #define  I2CAdd 0x40
 HCPCA9685 HCPCA9685(I2CAdd);
 
+// --- bluetooth
 char receivedValueBT;
 
 /* Create object named bt of the class SoftwareSerial */ 
 SoftwareSerial bt(10,11); /* (Rx,Tx) */  
 
+// --- ultrasonic sensors
+#define TRIGGER_PIN 5
+#define ECHO_PIN 6
+#define TRIGGER_PIN2 9
+#define ECHO_PIN2 4
+
+#define MAX_DISTANCE 400 
+
+NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
+NewPing sonar2(TRIGGER_PIN2, ECHO_PIN2, MAX_DISTANCE);
+
+// --- legs
 //int servoRoms[12][12] = {{72, 180}, {22, 170}, {0, 0}, {10, 140}, {0, 180}, {0, 0}, {0, 70}, {35, 70}, {0, 0}, {10, 60}, {35, 140}, {0, 0}};
 //                      c             c           c            c           c           c           c             c
 int servoRoms[4][6] = {{40, 180, 90, 150, 35, 0}, {3, 120, 85, 135, 75, 0}, {0, 115, 90, 150, 85, 0}, {0, 125,  90, 150, 90, 0}};
@@ -24,6 +39,8 @@ double y[4] = {0 ,0, 0, 0};
 double z[4] = {0, 0, 0, 0};
 
 //all functions predeclaration
+//sensors
+bool checkDistance(); // returns true if there is NO obstacle
 // complex movements
 void rotateRight(int speed);
 void workout(int reps);
@@ -59,6 +76,10 @@ void setup() {
 }
 
 void loop() {
+  if (!checkDistance()){
+    standUp(5);
+  }
+
  if (bt.available()) 
   {
     receivedValueBT = bt.read();
@@ -127,6 +148,16 @@ void loop() {
  }
   delay(100);
 
+}
+
+// --- sensors
+bool checkDistance(){
+  if(sonar.ping_cm() >= 7){
+    return true;
+  }
+  else{
+    return false;
+  }
 }
 
 // --- complex movements
