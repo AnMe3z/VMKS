@@ -28,6 +28,7 @@ void reset();
 // basic movements
 void standDown();
 void standUp(double targetHeight);
+void pitch(double angle);
 // essential movements
 void inverseKinematicsZTest(int legIndex, double torsoHeight, double x);
 void inverseKinematics(int legIndex, double torsoHeight, double x);
@@ -50,8 +51,10 @@ void setup() {
 
 void loop() {
   
-  walk(50);
-  reset();
+  // walk(50);
+  // reset();
+
+  pitch(25);
   
   delay(1000);
 
@@ -89,24 +92,11 @@ void walk(int speed){
   double lDStep = (2 * radius) / (angle / archSteps);
 
   //pitch
-  double pitch = 2;
-  y[0] += pitch;
-  y[1] += pitch;
-
-  //rear legs lean
-  double lean = 1;
-  x[0] -= lean;
-  x[1] -= lean;
-
-  inverseKinematics(0, y[0], x[0]);
-  inverseKinematics(1, y[1], x[1]);
-  inverseKinematics(2, y[2], x[2]);
-  inverseKinematics(3, y[3], x[3]);
+  pitch(25);
   delay(1000);
 
   double cx[4] = {x[0] + radius/2, x[1] + radius/2, x[2] + radius/2, x[3] + radius/2};
   double cy[4] = {y[0], y[1], y[2], y[3]};
-
 
   while(angle > 0){
     angle -= 180/archSteps;
@@ -272,6 +262,24 @@ void standDown(){
     inverseKinematics(3, y[3], 0);
     delay(delayTime);
   }
+}
+
+void pitch(double angle){
+  
+  double bodyLenght = 33.00;
+  double radius = bodyLenght/2;
+
+  double pitchOffsetX = radius - cos(angle)*radius;
+
+  x[0] -= pitchOffsetX;
+  x[1] -= pitchOffsetX;
+  x[2] -= pitchOffsetX;
+  x[3] -= pitchOffsetX;
+
+  inverseKinematics(0, y[0], x[0]);
+  inverseKinematics(1, y[1], x[1]);
+  inverseKinematics(2, y[2], x[2]);
+  inverseKinematics(3, y[3], x[3]);
 }
 
 // --- essensials
