@@ -46,6 +46,7 @@ void rotateRight(int speed);
 void workout(int reps);
 void sideStep();
 void walk(int speed);
+void reset();
 void walkTrust(int speed);
 void walkReverse(int speed);
 // basic movements
@@ -80,72 +81,73 @@ void loop() {
     standUp(5);
   }
 
- if (bt.available()) 
-  {
-    receivedValueBT = bt.read();
-    if (receivedValueBT == '1') // walk
-      {
-        Serial.write("One");
-        walk(50);
-      }
-    else if (receivedValueBT == '2') // left
-      {
-        Serial.write("Two");
-        sideStep();
-      }
-    else if (receivedValueBT == '3') // right
-      {
-        Serial.write("Three");
-        rotateRight(50);
-      }
-    else if (receivedValueBT == '4') // reverse
-      {
-        Serial.write("Four");
-        walkReverse(50);
-      }
-    else if (receivedValueBT == '5') // standUp
-      {
-        Serial.write("Five");
-        standUp(5);
-      }
-    else if (receivedValueBT == '6') // standDown
-      {
-        Serial.write("Six");
-        standDown();
-      }
-    else if (receivedValueBT == '7') // xTest
-      {
-        Serial.write("Seven");
-        xTestMovement();
-      }
-    else if (receivedValueBT == '8') // pitchTest
-      {
-        Serial.write("Eight");
-        pitchTestMovement();
-      }
-    else if (receivedValueBT == '9') // 180 degrees - work in progress
-      {
-        Serial.write("Nine");
-        pitchTestMovement();
-      }
-    else if (receivedValueBT == 'A') // SidestepLEFT
-      {
-        Serial.write("Ten - A");
-        pitchTestMovement();
-      }
-    else if (receivedValueBT == 'B') // SidestepRIGHT
-      {
-        Serial.write("Eleven - B");
-        pitchTestMovement();
-      }
-    else if (receivedValueBT == 'C') //pushups
-      {
-        Serial.write("Twelve - C");
-        workout(5);
-      }
+  if (bt.available()) 
+    {
+      receivedValueBT = bt.read();
+      if (receivedValueBT == '1') // walk
+        {
+          Serial.write("One");
+          walk(50);
+          reset();
+        }
+      else if (receivedValueBT == '2') // left
+        {
+          Serial.write("Two");
+          sideStep();
+        }
+      else if (receivedValueBT == '3') // right
+        {
+          Serial.write("Three");
+          rotateRight(50);
+        }
+      else if (receivedValueBT == '4') // reverse
+        {
+          Serial.write("Four");
+          walkReverse(50);
+        }
+      else if (receivedValueBT == '5') // standUp
+        {
+          Serial.write("Five");
+          standUp(5);
+        }
+      else if (receivedValueBT == '6') // standDown
+        {
+          Serial.write("Six");
+          standDown();
+        }
+      else if (receivedValueBT == '7') // xTest
+        {
+          Serial.write("Seven");
+          xTestMovement();
+        }
+      else if (receivedValueBT == '8') // pitchTest
+        {
+          Serial.write("Eight");
+          pitchTestMovement();
+        }
+      else if (receivedValueBT == '9') // 180 degrees - work in progress
+        {
+          Serial.write("Nine");
+          pitchTestMovement();
+        }
+      else if (receivedValueBT == 'A') // SidestepLEFT
+        {
+          Serial.write("Ten - A");
+          pitchTestMovement();
+        }
+      else if (receivedValueBT == 'B') // SidestepRIGHT
+        {
+          Serial.write("Eleven - B");
+          pitchTestMovement();
+        }
+      else if (receivedValueBT == 'C') //pushups
+        {
+          Serial.write("Twelve - C");
+          workout(5);
+        }
+    }
+  else{
   }
- else{
- }
   delay(100);
 
 }
@@ -490,6 +492,22 @@ void sideStep(){
 
     delay(50);
   }
+}
+
+void reset(){
+  y[0] = 5;
+  x[0] = 0;
+  y[1] = 5;
+  x[1] = 0;
+  y[2] = 5;
+  x[2] = 0;
+  y[3] = 5;
+  x[3] = 0;
+  inverseKinematics(0, y[0], x[0]);
+  inverseKinematics(1, y[1], x[1]);
+  inverseKinematics(2, y[2], x[2]);
+  inverseKinematics(3, y[3], x[3]);
+  delay(150);
 }
 
 void walk(int speed){
