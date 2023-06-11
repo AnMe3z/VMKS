@@ -26,10 +26,25 @@ NewPing sonar2(TRIGGER_PIN2, ECHO_PIN2, MAX_DISTANCE);
 // --- legs
 //int servoRoms[12][12] = {{72, 180}, {22, 170}, {0, 0}, {10, 140}, {0, 180}, {0, 0}, {0, 70}, {35, 70}, {0, 0}, {10, 60}, {35, 140}, {0, 0}};
 //                      c             c           c            c           c           c           c             c
-int servoRoms[4][6] = {{40, 180, 90, 150, 35, 0}, {3, 120, 85, 135, 75, 0}, {0, 115, 90, 150, 85, 0}, {0, 125,  90, 150, 90, 0}};
+int servoRoms[4][6] = {
+  {40, 180, 90, 150, 35, 0}, 
+  {3, 120, 85, 135, 75, 0}, 
+  {0, 115, 90, 150, 85, 0}, 
+  {0, 125,  90, 150, 90, 0}
+  };
 //the legs need to be closed at the start of the program for the angles to be true
-int servoCurrentAngles[4][3] = {{40, 170, 0}, {3, 156, 0}, {0, 150, 0}, {0, 180, 0}};
-int leg[4][3] = {{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}};
+int servoCurrentAngles[4][3] = {
+  {40, 170, 0}, 
+  {3, 156, 0}, 
+  {0, 150, 0}, 
+  {0, 180, 0}
+  };
+int leg[4][3] = {
+  {0, 1, 2}, 
+  {3, 4, 5}, 
+  {6, 7, 8}, 
+  {9, 10, 11}
+  };
 
 int legLenght = 10;
 
@@ -46,6 +61,7 @@ void rotateRight(int speed);
 void workout(int reps);
 void sideStep();
 void walk(int speed);
+void pitch(double angle);
 void reset();
 void walkTrust(int speed);
 void walkReverse(int speed);
@@ -89,6 +105,13 @@ void loop() {
           Serial.write("One");
           walk(50);
           reset();
+          delay(150);
+          walk(50);
+          reset();
+          delay(150);
+          walk(50);
+          reset();
+          delay(150);
         }
       else if (receivedValueBT == '2') // left
         {
@@ -523,6 +546,10 @@ void walk(int speed){
   //legs drift step
   double lDStep = (2 * radius) / (angle / archSteps);
 
+  //pitch
+  pitch(10);
+  delay(100);
+
   double cx[4] = {x[0] + radius/2, x[1] + radius/2, x[2] + radius/2, x[3] + radius/2};
   double cy[4] = {y[0], y[1], y[2], y[3]};
 
@@ -652,6 +679,10 @@ void walk(int speed){
 
     delay(speed);
   }
+  
+  //restore normal pitch
+  pitch(-10);
+  delay(100);
 }
 
 void walkTrust(int speed){
@@ -964,7 +995,7 @@ void standUp(double targetHeight){
     y[3] += servoStep;
     inverseKinematics(0, y[0], 0);
     inverseKinematics(1, y[1], 0);
-    inverseKinematics(2, y[2], 0);
+    inverseKinematics(2, y[2], 0);  
     inverseKinematics(3, y[3], 0);
     delay(delayTime);
   }
@@ -986,6 +1017,29 @@ void standDown(){
     inverseKinematics(3, y[3], 0);
     delay(delayTime);
   }
+}
+
+void pitch(double angle){
+  
+  double bodyLenght = 33.00;
+  double radius = bodyLenght/2;
+
+  double pitchOffsetX = radius - cos((angle * 71) / 4068)*radius;
+
+  x[0] -= pitchOffsetX;
+  x[1] -= pitchOffsetX;
+  x[2] -= pitchOffsetX;
+  x[3] -= pitchOffsetX;
+
+  y[0] += pitchOffsetX;
+  y[1] += pitchOffsetX;
+  y[2] -= pitchOffsetX;
+  y[3] -= pitchOffsetX;
+
+  inverseKinematics(0, y[0], x[0]);
+  inverseKinematics(1, y[1], x[1]);
+  inverseKinematics(2, y[2], x[2]);
+  inverseKinematics(3, y[3], x[3]);
 }
 
 void xMovement(double tX){
